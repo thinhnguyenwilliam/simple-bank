@@ -1,0 +1,94 @@
+# -------------------------
+# Go build artifacts
+# -------------------------
+bin/
+build/
+dist/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Go workspace
+*.swp
+*.swo
+
+# Dependency directories (if any)
+vendor/
+
+# -------------------------
+# IDE / Editor files
+# -------------------------
+# VS Code
+.vscode/
+*.code-workspace
+
+# GoLand / IntelliJ
+.idea/
+*.iml
+
+# -------------------------
+# OS files
+# -------------------------
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+# Linux
+*~
+
+# -------------------------
+# Environment & Config
+# -------------------------
+.env
+*.env
+.env.local
+app.env
+config.yaml
+config.yml
+*.toml
+
+# -------------------------
+# Logs
+# -------------------------
+*.log
+logs/
+log/
+
+# -------------------------
+# Database / SQLC / Migration
+# -------------------------
+# SQLC gen code (if placed in a generated folder)
+db/sqlc/*
+
+# But keep the migration SQL files
+!db/migrations/*.sql
+
+# Migrate lock files
+*.lock
+
+# -------------------------
+# Temporary files
+# -------------------------
+tmp/
+temp/
+.cache/
+coverage.out
+
+# -------------------------
+# Docker artifacts
+# -------------------------
+docker-data/
+postgres_data/
+*.pid
+
+# -------------------------
+# Misc
+# -------------------------
+*.bak
