@@ -1,0 +1,14 @@
+version: "2"
+
+sql:
+  - schema: "./db/migrations"
+    queries: "./db/query"
+    engine: "postgresql"
+    gen:
+      go:
+        package: "db" 
+        out: "./db/sqlc"
+        emit_json_tags: true # Add json:"field" tags in generated Go structs
+        emit_prepared_queries: false # Use prepared statements (you set false)
+        emit_interface: false # Generate a Querier interface (you set false)
+        emit_exact_table_names: true # Use table name exactly as-is (no pluralizing/snake_case changes)
