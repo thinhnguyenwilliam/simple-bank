@@ -19,8 +19,8 @@ sqlc:
 	sqlc generate
 
 test:
-	go test -v ./...
+	go test -v -cover ./...
 
 test-sqlc:
-	go test -v ./db/sqlc
+	go test -v -cover ./db/sqlc
 
