@@ -65,7 +65,7 @@ log/
 # Database / SQLC / Migration
 # -------------------------
 # SQLC gen code (if placed in a generated folder)
-db/sqlc/*
+# db/sqlc/*
 
 # But keep the migration SQL files
 !db/migrations/*.sql
