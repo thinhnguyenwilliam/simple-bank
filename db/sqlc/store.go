@@ -6,6 +6,8 @@ import (
 	"fmt"
 )
 
+var txKey = struct{}{}
+
 // Store provides all functions to execute db queries and transactions
 type Store struct {
 	db *sql.DB
@@ -73,6 +75,9 @@ func (store *Store) TransferTx(
 	err := store.execTx(ctx, func(q *Queries) error {
 		var err error
 
+		txName := ctx.Value(txKey)
+		fmt.Println(txName, "[1---] Create transfer")
+
 		// 1. Create transfer
 		// Because the fields match exactly, you can convert the struct instead of rebuilding it
 		result.Transfer, err = q.CreateTransfer(
@@ -84,6 +89,7 @@ func (store *Store) TransferTx(
 		}
 
 		// 2. Create entries
+		fmt.Println(txName, "[2---] Create entries 1")
 		result.FromEntry, err = q.CreateEntry(ctx, CreateEntryParams{
 			AccountID: arg.FromAccountID,
 			Amount:    -arg.Amount,
@@ -92,6 +98,7 @@ func (store *Store) TransferTx(
 			return err
 		}
 
+		fmt.Println(txName, "[3---] Create entries 2")
 		result.ToEntry, err = q.CreateEntry(ctx, CreateEntryParams{
 			AccountID: arg.ToAccountID,
 			Amount:    arg.Amount,
@@ -101,15 +108,15 @@ func (store *Store) TransferTx(
 		}
 
 		// 3. Update balances (deadlock-safe order)
-		// if arg.FromAccountID < arg.ToAccountID {
-		// 	result.FromAccount, result.ToAccount, err =
-		// 		addMoney(ctx, q, arg.FromAccountID, -arg.Amount, arg.ToAccountID, arg.Amount)
-		// } else {
-		// 	result.ToAccount, result.FromAccount, err =
-		// 		addMoney(ctx, q, arg.ToAccountID, arg.Amount, arg.FromAccountID, -arg.Amount)
-		// }
+		if arg.FromAccountID < arg.ToAccountID {
+			result.FromAccount, result.ToAccount, err =
+				addMoney(ctx, q, arg.FromAccountID, -arg.Amount, arg.ToAccountID, arg.Amount)
+		} else {
+			result.ToAccount, result.FromAccount, err =
+				addMoney(ctx, q, arg.ToAccountID, arg.Amount, arg.FromAccountID, -arg.Amount)
+		}
 
-		return nil // return err
+		return err
 	})
 
 	return result, err

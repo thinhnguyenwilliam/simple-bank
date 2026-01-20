@@ -52,9 +52,11 @@ func TestGetAccount(t *testing.T) {
 func TestUpdateAccount(t *testing.T) {
 	account1 := createRandomAccount(t)
 
+	addAmount := util.RandomMoney()
+
 	arg := UpdateAccountParams{
 		ID:      account1.ID,
-		Balance: util.RandomMoney(),
+		Balance: addAmount,
 	}
 
 	account2, err := testQueries.UpdateAccount(context.Background(), arg)
@@ -62,9 +64,11 @@ func TestUpdateAccount(t *testing.T) {
 	require.NotEmpty(t, account2)
 
 	require.Equal(t, account1.ID, account2.ID)
-	require.Equal(t, arg.Balance, account2.Balance)
 	require.Equal(t, account1.Owner, account2.Owner)
 	require.Equal(t, account1.Currency, account2.Currency)
+
+	// ✅ correct balance assertion
+	require.Equal(t, account1.Balance+addAmount, account2.Balance)
 }
 
 func TestDeleteAccount(t *testing.T) {
