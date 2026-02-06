@@ -1,6 +1,9 @@
+// simple-bank\util\random.go
+
 package util
 
 import (
+	"fmt"
 	"math/rand"
 	"strings"
 	"time"
@@ -39,4 +42,8 @@ func RandomMoney() int64 {
 func RandomCurrency() string {
 	currencies := []string{USD, EUR, CAD}
 	return currencies[seededRand.Intn(len(currencies))]
+}
+
+func RandomEmail() string {
+	return fmt.Sprintf("%s@email.com", RandomString(6))
 }
