@@ -1,9 +1,13 @@
+// simple-bank\util\config.go
+
 package util
 
 import "github.com/spf13/viper"
 
 type Config struct {
-	DBSource string `mapstructure:"DB_SOURCE"`
+	DBSource      string `mapstructure:"DB_SOURCE"`
+	DBDriver      string `mapstructure:"DB_DRIVER"`
+	ServerAddress string `mapstructure:"SERVER_ADDRESS"`
 }
 
 func LoadConfig(path string) (config Config, err error) {
@@ -11,7 +15,7 @@ func LoadConfig(path string) (config Config, err error) {
 	viper.SetConfigName("app")
 	viper.SetConfigType("env")
 
-	// allow environment variables to override config file
+	// allow reading from OS env vars
 	viper.AutomaticEnv()
 
 	// config file is OPTIONAL (important for CI)

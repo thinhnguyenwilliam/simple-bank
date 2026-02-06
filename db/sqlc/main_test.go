@@ -16,8 +16,6 @@ import (
 var testQueries *Queries
 var testDB *sql.DB
 
-const dbDriver = "postgres"
-
 func TestMain(m *testing.M) {
 	// from db/sqlc → project root
 	config, err := util.LoadConfig("../..")
@@ -25,7 +23,7 @@ func TestMain(m *testing.M) {
 		log.Fatal("cannot load config:", err)
 	}
 
-	testDB, err = sql.Open(dbDriver, config.DBSource)
+	testDB, err = sql.Open(config.DBDriver, config.DBSource)
 	if err != nil {
 		log.Fatal("cannot connect to db:", err)
 	}

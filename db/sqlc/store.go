@@ -1,3 +1,5 @@
+// simple-bank\db\sqlc\store.go
+
 package db
 
 import (
@@ -8,22 +10,27 @@ import (
 
 var txKey = struct{}{}
 
-// Store provides all functions to execute db queries and transactions
-type Store struct {
+type Store interface {
+	Querier
+	TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error)
+}
+
+// Store provides all functions to execute SQL queries and transactions
+type SQLStore struct {
 	db *sql.DB
 	*Queries
 }
 
 // NewStore creates a new Store
-func NewStore(db *sql.DB) *Store {
-	return &Store{
+func NewStore(db *sql.DB) Store {
+	return &SQLStore{
 		db:      db,
 		Queries: New(db),
 	}
 }
 
 // execTx executes a function within a database transaction
-func (store *Store) execTx(
+func (store *SQLStore) execTx(
 	ctx context.Context,
 	fn func(*Queries) error,
 ) error {
@@ -65,7 +72,7 @@ type TransferTxResult struct {
 
 // TransferTx performs a money transfer from one account to another
 // It creates a transfer record, adds entries, and updates account balances
-func (store *Store) TransferTx(
+func (store *SQLStore) TransferTx(
 	ctx context.Context,
 	arg TransferTxParams,
 ) (TransferTxResult, error) {
