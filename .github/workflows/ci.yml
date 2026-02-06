@@ -25,6 +25,8 @@ jobs:
           --health-timeout=5s
           --health-retries=5
 
+    env:
+      DB_SOURCE: postgres://admin:admin123@localhost:5432/simplebank?sslmode=disable
 
     steps:
       - name: Checkout code
@@ -36,8 +38,7 @@ jobs:
           go-version: "1.22"
 
       - name: Install sqlc
-        run: |
-          go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+        run: go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 
       - name: Install migrate
         run: |
@@ -55,7 +56,7 @@ jobs:
       - name: Run migrations
         run: |
           migrate -path db/migrations \
-            -database "postgres://admin:admin123@192.168.1.8:5432/simplebank?sslmode=disable" up
+            -database "$DB_SOURCE" up
 
       - name: Generate sqlc code
         run: sqlc generate
