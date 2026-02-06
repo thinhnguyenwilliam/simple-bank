@@ -1,4 +1,4 @@
-.PHONY: migrate_up migrate_down migrate_down1 migrate_force sqlc \
+.PHONY: migrate_up migrate_down migrate_down1 migrate_force sqlc migrate-create migrate_up1 \
 		test test-sqlc server air mock test-api
 
 DB_URL=postgres://admin:admin123@192.168.1.8:5432/simplebank?sslmode=disable
@@ -6,8 +6,16 @@ DB_URL=postgres://admin:admin123@192.168.1.8:5432/simplebank?sslmode=disable
 
 MIGRATE_PATH=db/migrations
 
+## Create new migration
+## how to use: make migrate-create name=add_users
+migrate-create:
+	migrate create -ext sql -dir $(MIGRATE_PATH) -seq $(name)
+
 migrate_up:
 	migrate -verbose -path "$(MIGRATE_PATH)" -database "$(DB_URL)" up
+
+migrate_up1:
+	migrate -verbose -path "$(MIGRATE_PATH)" -database "$(DB_URL)" up 1
 
 migrate_down:
 	migrate -verbose -path "$(MIGRATE_PATH)" -database "$(DB_URL)" down
