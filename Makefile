@@ -1,6 +1,8 @@
 .PHONY: migrate_up migrate_down migrate_down1 migrate_force sqlc test test-sqlc
 
-DB_URL=postgres://admin:admin123@192.168.1.8:5432/simplebank?sslmode=disable
+# DB_URL=postgres://admin:admin123@192.168.1.8:5432/simplebank?sslmode=disable
+DB_URL=postgres://root:root123@localhost:5432/testdb?sslmode=disable
+
 MIGRATE_PATH=C:/GoCode/github.com/thinhcompany/simple-bank/db/migrations
 
 migrate_up:
@@ -19,8 +21,8 @@ sqlc:
 	sqlc generate
 
 test:
-	go test -v -cover ./...
+	go test -v -count=1 -cover ./...
 
 test-sqlc:
-	go test -v -cover ./db/sqlc
+	go test -v -count=1 -cover ./db/sqlc
 
