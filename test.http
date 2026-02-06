@@ -1,7 +1,19 @@
 
 
+###
+POST http://localhost:8080/transfers
+Content-Type: application/json
+
+{
+  "from_account_id": 4,
+  "to_account_id": 3,
+  "amount": 100,
+  "currency": "USD"
+}
+
+
 ### List accounts – page 1
-GET http://localhost:8080/accounts?page_id=10&page_size=9
+GET http://localhost:8080/accounts?page_id=1&page_size=9
 
 
 ### ❌ Invalid page_id
@@ -16,7 +28,7 @@ GET http://localhost:8080/accounts?page_id=10000&page_size=5
 
 
 ### Get account by ID
-GET http://localhost:8080/accounts/1
+GET http://localhost:8080/accounts/4
 
 
 ### ❌ Invalid ID
