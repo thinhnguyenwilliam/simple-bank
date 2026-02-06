@@ -25,6 +25,7 @@ jobs:
           --health-timeout=5s
           --health-retries=5
 
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -54,7 +55,7 @@ jobs:
       - name: Run migrations
         run: |
           migrate -path db/migrations \
-            -database "postgres://admin:admin123@localhost:5432/simplebank?sslmode=disable" up
+            -database "postgres://admin:admin123@192.168.1.8:5432/simplebank?sslmode=disable" up
 
       - name: Generate sqlc code
         run: sqlc generate
