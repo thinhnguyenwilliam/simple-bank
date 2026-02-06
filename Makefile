@@ -1,7 +1,8 @@
-.PHONY: migrate_up migrate_down migrate_down1 migrate_force sqlc test test-sqlc
+.PHONY: migrate_up migrate_down migrate_down1 migrate_force sqlc \
+		test test-sqlc server air
 
-# DB_URL=postgres://admin:admin123@192.168.1.8:5432/simplebank?sslmode=disable
-DB_URL=postgres://root:root123@localhost:5432/testdb?sslmode=disable
+DB_URL=postgres://admin:admin123@192.168.1.8:5432/simplebank?sslmode=disable
+# DB_URL=postgres://root:root123@localhost:5432/testdb?sslmode=disable
 
 MIGRATE_PATH=db/migrations
 
@@ -26,3 +27,8 @@ test:
 test-sqlc:
 	go test -v -count=1 -cover ./db/sqlc
 
+server:
+	go run .
+
+air:
+	air

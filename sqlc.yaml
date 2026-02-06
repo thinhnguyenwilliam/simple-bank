@@ -12,3 +12,4 @@ sql:
         emit_prepared_queries: false # Use prepared statements (you set false)
         emit_interface: false # Generate a Querier interface (you set false)
         emit_exact_table_names: true # Use table name exactly as-is (no pluralizing/snake_case changes)
+        emit_empty_slices: true # list queries return []T{} instead of nil
