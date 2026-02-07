@@ -53,8 +53,8 @@ POST http://localhost:8080/accounts
 Content-Type: application/json
 
 {
-  "owner": "alice3",
-  "currency": "USD"
+  "owner": "eyiuec",
+  "currency": "EUR"
 }
 
 

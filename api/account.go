@@ -3,11 +3,13 @@ package api
 
 import (
 	"database/sql"
+	"log"
 	"net/http"
 
 	db "simple-bank/db/sqlc"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lib/pq"
 )
 
 type listAccountRequest struct {
@@ -83,6 +85,19 @@ func (s *Server) createAccount(c *gin.Context) {
 
 	account, err := s.store.CreateAccount(c, arg)
 	if err != nil {
+		if pqErr, ok := err.(*pq.Error); ok {
+			log.Println("pq error is:", pqErr.Code.Name())
+
+			switch pqErr.Code.Name() {
+			case "foreign_key_violation":
+				c.JSON(http.StatusNotFound, errorResponse(err))
+				return
+			case "unique_violation":
+				c.JSON(http.StatusConflict, errorResponse(err))
+				return
+			}
+		}
+
 		c.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
