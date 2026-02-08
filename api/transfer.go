@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	db "simple-bank/db/sqlc"
+	"simple-bank/token"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,7 +26,17 @@ func (server *Server) createTransfer(c *gin.Context) {
 		return
 	}
 
-	if _, ok := server.validAccount(c, req.FromAccountID, req.Currency); !ok {
+	fromAccount, ok := server.validAccount(c, req.FromAccountID, req.Currency)
+	if !ok {
+		return
+	}
+
+	payload := c.MustGet("authorization_payload").(*token.Payload)
+	username := payload.Username
+	if fromAccount.Owner != username {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "from account does not belong to the authenticated user",
+		})
 		return
 	}
 

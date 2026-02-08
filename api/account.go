@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	db "simple-bank/db/sqlc"
+	"simple-bank/token"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lib/pq"
@@ -25,7 +26,11 @@ func (s *Server) listAccount(c *gin.Context) {
 		return
 	}
 
+	payload := c.MustGet("authorization_payload").(*token.Payload)
+	username := payload.Username
+
 	arg := db.ListAccountsParams{
+		Owner:  username,
 		Limit:  req.PageSize,
 		Offset: (req.PageID - 1) * req.PageSize,
 	}
@@ -61,11 +66,19 @@ func (s *Server) getAccount(c *gin.Context) {
 		return
 	}
 
+	// 🔐 authorization check
+	payload := c.MustGet("authorization_payload").(*token.Payload)
+	if account.Owner != payload.Username {
+		c.JSON(http.StatusForbidden, gin.H{
+			"error": "account does not belong to the authenticated user",
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, account)
 }
 
 type createAccountRequest struct {
-	Owner    string `json:"owner" binding:"required"`
 	Currency string `json:"currency" binding:"required,currency"`
 }
 
@@ -77,8 +90,11 @@ func (s *Server) createAccount(c *gin.Context) {
 		return
 	}
 
+	payload := c.MustGet("authorization_payload").(*token.Payload)
+	username := payload.Username
+
 	arg := db.CreateAccountParams{
-		Owner:    req.Owner,
+		Owner:    username,
 		Currency: req.Currency,
 		Balance:  0,
 	}
