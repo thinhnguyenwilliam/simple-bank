@@ -1,10 +1,48 @@
 .PHONY: migrate_up migrate_down migrate_down1 migrate_force sqlc migrate-create migrate_up1 \
-		test test-sqlc server air mock test-api test-util test-token test-only-fuction
+		test test-sqlc server air mock test-api test-util test-token test-only-fuction \
+		docker-build docker-run go-build clean
 
 DB_URL=postgres://admin:admin123@192.168.1.8:5432/simplebank?sslmode=disable
 # DB_URL=postgres://root:root123@localhost:5432/testdb?sslmode=disable
 
 MIGRATE_PATH=db/migrations
+IMAGE_NAME=simple-bank
+ENV_FILE=app.env
+
+APP_NAME=simple-bank
+BUILD_DIR=bin
+
+
+go-build:
+	go build -o $(BUILD_DIR)/$(APP_NAME).exe .
+
+clean:
+	if exist $(BUILD_DIR)\$(APP_NAME).exe del $(BUILD_DIR)\$(APP_NAME).exe
+
+
+# ========================
+# Docker
+# ========================
+docker-build:
+	docker build -t $(IMAGE_NAME) .
+
+docker-run:
+	docker run --rm \
+		--name simple-bank \
+		-p 8080:8080 \
+		--env-file $(ENV_FILE) \
+		$(IMAGE_NAME)
+
+
+docker-run-bg:
+	docker run -d -p 8080:8080 \
+		--env-file $(ENV_FILE) \
+		--name $(IMAGE_NAME) \
+		$(IMAGE_NAME)
+
+docker-stop:
+	docker stop $(IMAGE_NAME) || true
+	docker rm $(IMAGE_NAME) || true
 
 ## Create new migration
 ## how to use: make migrate-create name=add_users
