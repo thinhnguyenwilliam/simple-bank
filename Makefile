@@ -1,5 +1,5 @@
 .PHONY: migrate_up migrate_down migrate_down1 migrate_force sqlc migrate-create migrate_up1 \
-		test test-sqlc server air mock test-api test-util
+		test test-sqlc server air mock test-api test-util test-token test-only-fuction
 
 DB_URL=postgres://admin:admin123@192.168.1.8:5432/simplebank?sslmode=disable
 # DB_URL=postgres://root:root123@localhost:5432/testdb?sslmode=disable
@@ -41,6 +41,11 @@ test-api:
 test-util:
 	go test ./util -v
 
+test-token:
+	go test -v -count=1 -cover ./token
+
+test-only-fuction:
+	go test -run TestJWTMakerCreateAndVerifyToken ./token
 
 server:
 	go run .
