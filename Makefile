@@ -1,5 +1,5 @@
 .PHONY: migrate_up migrate_down migrate_down1 migrate_force sqlc migrate-create migrate_up1 \
-		test test-sqlc server air mock test-api
+		test test-sqlc server air mock test-api test-util
 
 DB_URL=postgres://admin:admin123@192.168.1.8:5432/simplebank?sslmode=disable
 # DB_URL=postgres://root:root123@localhost:5432/testdb?sslmode=disable
@@ -37,6 +37,10 @@ test-sqlc:
 
 test-api:
 	go test -v -count=1 -cover ./api
+
+test-util:
+	go test ./util -v
+
 
 server:
 	go run .

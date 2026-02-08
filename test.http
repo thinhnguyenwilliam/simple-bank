@@ -1,12 +1,25 @@
 
 
+
+### Create user
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "username": "alice126",
+  "password": "secret123",
+  "full_name": "Alice Wonderland",
+  "email": "alice126@example.com"
+}
+
+
 ###
 POST http://localhost:8080/transfers
 Content-Type: application/json
 
 {
-  "from_account_id": 4,
-  "to_account_id": 3,
+  "from_account_id": 14,
+  "to_account_id": 13,
   "amount": 100,
   "currency": "USD"
 }
