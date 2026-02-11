@@ -1,0 +1,24 @@
+https://dbdocs.io/thinhproee
+--
+
+
+Open PowerShell:
+npm install -g @dbml/cli
+npm install -g dbdocs
+
+--
+
+Check:
+dbdocs --help
+dbml2sql  --version
+
+
+
+--
+
+dbdocs login
+
+
+--
+Build documentation:
+dbdocs build doc/db.dbml
