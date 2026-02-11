@@ -1,6 +1,6 @@
 .PHONY: migrate_up migrate_down migrate_down1 migrate_force sqlc migrate-create migrate_up1 \
 		test test-sqlc server air mock test-api test-util test-token test-only-fuction \
-		docker-build docker-run go-build clean
+		docker-build docker-run go-build clean compose-up compose-down
 
 DB_URL=postgres://admin:admin123@192.168.1.8:5432/simplebank?sslmode=disable
 # DB_URL=postgres://root:root123@localhost:5432/testdb?sslmode=disable
@@ -11,6 +11,16 @@ ENV_FILE=app.env
 
 APP_NAME=simple-bank
 BUILD_DIR=bin
+
+
+compose-up:
+	docker compose up --build
+
+compose-down:
+	docker compose down
+
+compose-down-v:
+	docker compose down -v
 
 
 go-build:
@@ -46,6 +56,7 @@ docker-stop:
 
 ## Create new migration
 ## how to use: make migrate-create name=add_users
+# make migrate-create name=add_sessions
 migrate-create:
 	migrate create -ext sql -dir $(MIGRATE_PATH) -seq $(name)
 

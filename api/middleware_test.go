@@ -39,10 +39,11 @@ func TestAuthMiddleware(t *testing.T) {
 	username := "thinh"
 	duration := time.Minute
 
-	accessToken, err := tokenMaker.CreateToken(username, duration)
+	accessToken, payload, err := tokenMaker.CreateToken(username, duration)
 	require.NoError(t, err)
+	require.NotEmpty(t, payload)
 
-	expiredToken, err := tokenMaker.CreateToken(username, -time.Minute)
+	expiredToken, payload, err := tokenMaker.CreateToken(username, -time.Minute)
 	require.NoError(t, err)
 
 	testCases := []struct {

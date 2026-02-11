@@ -1,5 +1,15 @@
 @baseUrl = http://localhost:8080
 @access_token = v2.local.KiMpFl_PBzjjylaqzpbsMf1HKZuCggcdBjI355GD6xuaC2x_WTiSoW_D5wSqu6h74IvepUDAcjrWc1pyC6ftKEiXZ2MLJ2XPOn_MH0GHt8pcOudxWvV11OYjyuj101vX72_Hbk7zCDD-oXiBMoKdWVCldEyQ6-EWHwzzU04CkamA41vy_qerUtycnSJ6US_17Ozo0fmxlzbweWHk3QoA-ewSNQjXwv2v51ZJHSNOqFSLZBPhtpNeqSTrf8PUGlUCVdjd9ZVIiw.bnVsbA
+@refresh_token = v2.local.xn4MA8PMPTAf0g1pchRf_3pA-6IYfac1dD2QhGluYzNfJMkT-EPDuzjD273Mlnzzn_wIe5y4k7k5goYZQVLfNWj_EgYvSgxYvGdrvM13YwOWdF9E46gpGoFawf4EWqNYWruHqbSH3tXjQoeVkLe3jyiiLpxUEkaUEyYxYdfUAxLpAtkG1TpomI5JtbmYGaITbMvTjykRM1Mshec8S3Vr3uOmu0cUXEHGJr9kXIBWc5wnm987YErbPSXxUNyFv_Dp9cvQfhVOkw.bnVsbA
+
+
+### Renew access token
+POST {{baseUrl}}/tokens/renew_access
+Content-Type: application/json
+
+{
+  "refresh_token": "{{refresh_token}}"
+}
 
 
 ### Login user
