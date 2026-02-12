@@ -6,9 +6,9 @@ import (
 	"database/sql"
 	"log"
 
-	"simple-bank/api"
-	db "simple-bank/db/sqlc"
-	"simple-bank/util"
+	"github.com/thinhcompany/simple-bank/api"
+	db "github.com/thinhcompany/simple-bank/db/sqlc"
+	"github.com/thinhcompany/simple-bank/util"
 
 	_ "github.com/lib/pq"
 )

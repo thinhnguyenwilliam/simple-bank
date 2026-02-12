@@ -5,8 +5,9 @@ import (
 	"net/http"
 	"time"
 
-	db "simple-bank/db/sqlc"
-	"simple-bank/util"
+	db "github.com/thinhcompany/simple-bank/db/sqlc"
+
+	"github.com/thinhcompany/simple-bank/util"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"

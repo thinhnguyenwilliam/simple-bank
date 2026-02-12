@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"net/http"
 
-	db "simple-bank/db/sqlc"
-	"simple-bank/token"
+	db "github.com/thinhcompany/simple-bank/db/sqlc"
+	"github.com/thinhcompany/simple-bank/token"
 
 	"github.com/gin-gonic/gin"
 )

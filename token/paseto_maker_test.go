@@ -3,9 +3,10 @@
 package token
 
 import (
-	"simple-bank/util"
 	"testing"
 	"time"
+
+	"github.com/thinhcompany/simple-bank/util"
 
 	"github.com/stretchr/testify/require"
 )

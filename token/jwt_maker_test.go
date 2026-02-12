@@ -2,9 +2,10 @@
 package token
 
 import (
-	"simple-bank/util"
 	"testing"
 	"time"
+
+	"github.com/thinhcompany/simple-bank/util"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"

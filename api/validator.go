@@ -2,7 +2,7 @@
 package api
 
 import (
-	"simple-bank/util"
+	"github.com/thinhcompany/simple-bank/util"
 
 	"github.com/go-playground/validator/v10"
 )

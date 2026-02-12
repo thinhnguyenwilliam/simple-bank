@@ -8,7 +8,7 @@ import (
 	"os"
 	"testing"
 
-	"simple-bank/util"
+	"github.com/thinhcompany/simple-bank/util"
 
 	_ "github.com/lib/pq"
 )
