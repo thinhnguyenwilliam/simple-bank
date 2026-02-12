@@ -1,7 +1,8 @@
+# simple-bank\Makefile
 .PHONY: migrate_up migrate_down migrate_down1 migrate_force sqlc migrate-create migrate_up1 \
 		test test-sqlc server air mock test-api test-util test-token test-only-fuction \
 		docker-build docker-run go-build clean compose-up compose-down dbdocs \
-		dbdocs-set-password
+		dbdocs-set-password gen
 
 DB_URL=postgres://admin:admin123@192.168.1.8:5432/simplebank?sslmode=disable
 # DB_URL=postgres://root:root123@localhost:5432/testdb?sslmode=disable
@@ -14,7 +15,12 @@ APP_NAME=simple-bank
 BUILD_DIR=bin
 PASSWORD=secret123
 
-
+gen:
+	del /Q pb\*.go
+	protoc --proto_path=proto \
+		--go_out=pb --go_opt=paths=source_relative \
+		--go-grpc_out=pb --go-grpc_opt=paths=source_relative \
+		proto/*.proto
 
 dbdocs:
 	dbdocs build doc/db.dbml
@@ -116,6 +122,6 @@ mock:
 	mockgen \
 		-package mockdb \
 		-destination db/mock/store.go \
-		simple-bank/db/sqlc Store
+		github.com/thinhcompany/simple-bank/db/sqlc Store
 
 

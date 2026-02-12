@@ -9,9 +9,10 @@ import (
 	"testing"
 	"time"
 
-	mockdb "simple-bank/db/mock"
-	db "simple-bank/db/sqlc"
-	"simple-bank/token"
+	db "github.com/thinhcompany/simple-bank/db/sqlc"
+	"github.com/thinhcompany/simple-bank/token"
+
+	mockdb "github.com/thinhcompany/simple-bank/db/mock"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"

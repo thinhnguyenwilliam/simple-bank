@@ -1,5 +1,4 @@
 // simple-bank\db\sqlc\user_test.go
-
 package db
 
 import (
@@ -7,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"simple-bank/util"
+	"github.com/thinhcompany/simple-bank/util"
 
 	"github.com/stretchr/testify/require"
 )
