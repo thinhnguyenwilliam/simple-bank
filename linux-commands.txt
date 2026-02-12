@@ -1,0 +1,7 @@
+-Check What Is Using Port 8080
+sudo lsof -i :8080
+
+-Kill That Process
+kill -9 12345
+
+------

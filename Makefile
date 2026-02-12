@@ -5,7 +5,6 @@
 		dbdocs-set-password gen
 
 DB_URL=postgres://admin:admin123@192.168.1.8:5432/simplebank?sslmode=disable
-# DB_URL=postgres://root:root123@localhost:5432/testdb?sslmode=disable
 
 MIGRATE_PATH=db/migrations
 IMAGE_NAME=simple-bank
