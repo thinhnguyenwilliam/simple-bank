@@ -1,16 +1,42 @@
+# simple-bank/docker-compose.yml
 
 
 services:
-  api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: simple-bank-api
-    ports:
-      - "8080:8080"
-    env_file:
-      - app.env
-    command: ["/app/main"]
+  postgres:
+    image: postgres:16
+    container_name: simple-bank-postgres
     restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: simplebank
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: simple-bank-pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
 
+  # api:
+  #   build: .
+  #   container_name: simple-bank-api
+  #   restart: always
+  #   depends_on:
+  #     - postgres
+  #   env_file:
+  #     - app.env
+  #   ports:
+  #     - "8084:8084"
+
+volumes:
+  postgres_data:

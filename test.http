@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:8084
 @access_token = v2.local.KiMpFl_PBzjjylaqzpbsMf1HKZuCggcdBjI355GD6xuaC2x_WTiSoW_D5wSqu6h74IvepUDAcjrWc1pyC6ftKEiXZ2MLJ2XPOn_MH0GHt8pcOudxWvV11OYjyuj101vX72_Hbk7zCDD-oXiBMoKdWVCldEyQ6-EWHwzzU04CkamA41vy_qerUtycnSJ6US_17Ozo0fmxlzbweWHk3QoA-ewSNQjXwv2v51ZJHSNOqFSLZBPhtpNeqSTrf8PUGlUCVdjd9ZVIiw.bnVsbA
-@refresh_token = v2.local.xn4MA8PMPTAf0g1pchRf_3pA-6IYfac1dD2QhGluYzNfJMkT-EPDuzjD273Mlnzzn_wIe5y4k7k5goYZQVLfNWj_EgYvSgxYvGdrvM13YwOWdF9E46gpGoFawf4EWqNYWruHqbSH3tXjQoeVkLe3jyiiLpxUEkaUEyYxYdfUAxLpAtkG1TpomI5JtbmYGaITbMvTjykRM1Mshec8S3Vr3uOmu0cUXEHGJr9kXIBWc5wnm987YErbPSXxUNyFv_Dp9cvQfhVOkw.bnVsbA
+@refresh_token = v2.local.donVmdYc4pzGA11fl47-mqgdYnQ3ExuMpJoF5kT7wmpcvBCIG2AYO5HbF7t6pThfNaYPJqZ0gjzfvMot1QVn-fyafjgBqBymord61-QslfUaMpLDbkfHZ9XMt1Zw6YvkUtPotU1dnk5c0k-xVs2-J_AKyLL9CuB0QogMDDv8fQ234GeMLk5UJenxfo8KFaoZgz9JhQ3z_dtDKi0xqrG61MdkDsvf0TuBshPHcp10Rav3i9UivxdArwJM0q5jhiuDsGp3zinftpYUspA.bnVsbA
 
 
 ### Renew access token
@@ -24,7 +24,7 @@ Content-Type: application/json
 
 
 ### Create user
-POST http://localhost:8080/users
+POST {{baseUrl}}/users
 Content-Type: application/json
 
 {

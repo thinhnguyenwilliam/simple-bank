@@ -5,3 +5,12 @@ sudo lsof -i :8080
 kill -9 12345
 
 ------
+
+git config --global user.name "William-ticket-1"
+git config --global user.email "thinhproee@gmai.com"
+------
+
+Go installs binaries to:
+code ~/.bashrc
+
+---
