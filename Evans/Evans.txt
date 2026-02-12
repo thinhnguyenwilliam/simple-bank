@@ -1,0 +1,18 @@
+If reflection is enabled:
+evans -r repl -p 9091
+
+
+---
+show package
+package pb
+
+
+--
+show service
+service SimpleBank
+call CreateUser
+
+
+--
+show rpc
+

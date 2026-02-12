@@ -2,7 +2,7 @@
 .PHONY: migrate_up migrate_down migrate_down1 migrate_force sqlc migrate-create migrate_up1 \
 		test test-sqlc server air mock test-api test-util test-token test-only-fuction \
 		docker-build docker-run go-build clean compose-up compose-down dbdocs \
-		dbdocs-set-password gen
+		dbdocs-set-password gen evans
 
 DB_URL=postgres://admin:admin123@localhost:5432/simplebank?sslmode=disable
 
@@ -13,6 +13,9 @@ ENV_FILE=app.env
 APP_NAME=simple-bank
 BUILD_DIR=bin
 PASSWORD=secret123
+
+evans:
+	evans -r repl -p 9091
 
 gen:
 	rm -f pb/*.go
