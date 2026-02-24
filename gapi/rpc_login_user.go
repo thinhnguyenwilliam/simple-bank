@@ -4,7 +4,8 @@ package gapi
 import (
 	"context"
 
-	pbv1 "github.com/thinhcompany/simple-bank/pb/pb/v1"
+	db "github.com/thinhcompany/simple-bank/db/sqlc"
+	pb "github.com/thinhcompany/simple-bank/pb/pb/v1"
 	"github.com/thinhcompany/simple-bank/util"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -13,8 +14,8 @@ import (
 
 func (s *Server) LoginUser(
 	ctx context.Context,
-	req *pbv1.LoginUserRequest,
-) (*pbv1.LoginUserResponse, error) {
+	req *pb.LoginUserRequest,
+) (*pb.LoginUserResponse, error) {
 
 	// 1. Validate input
 	if req.GetUsername() == "" || req.GetPassword() == "" {
@@ -34,8 +35,7 @@ func (s *Server) LoginUser(
 	}
 
 	// 3. Check password
-	err = util.CheckPassword(req.GetPassword(), user.HashedPassword)
-	if err != nil {
+	if err := util.CheckPassword(req.GetPassword(), user.HashedPassword); err != nil {
 		return nil, status.Error(
 			codes.Unauthenticated,
 			"incorrect password",
@@ -43,7 +43,7 @@ func (s *Server) LoginUser(
 	}
 
 	// 4. Create access token
-	accessToken, payload, err := s.tokenMaker.CreateToken(
+	accessToken, accessPayload, err := s.tokenMaker.CreateToken(
 		user.Username,
 		s.config.AccessTokenDuration,
 	)
@@ -54,11 +54,43 @@ func (s *Server) LoginUser(
 		)
 	}
 
-	// 5. Build response
-	rsp := &pbv1.LoginUserResponse{
-		User:                 convertUser(user),
-		AccessToken:          accessToken,
-		AccessTokenExpiresAt: timestamppb.New(payload.ExpiredAt),
+	// 5. Create refresh token
+	refreshToken, refreshPayload, err := s.tokenMaker.CreateToken(
+		user.Username,
+		s.config.RefreshTokenDuration,
+	)
+	if err != nil {
+		return nil, status.Error(
+			codes.Internal,
+			"cannot create refresh token",
+		)
+	}
+
+	// 6. Store session
+	_, err = s.store.CreateSession(ctx, db.CreateSessionParams{
+		ID:           refreshPayload.ID,
+		Username:     user.Username,
+		RefreshToken: refreshToken,
+		UserAgent:    "", // gRPC metadata can be added later
+		ClientIp:     "",
+		IsBlocked:    false,
+		ExpiresAt:    refreshPayload.ExpiredAt,
+	})
+	if err != nil {
+		return nil, status.Error(
+			codes.Internal,
+			"failed to create session",
+		)
+	}
+
+	// 7. Build gRPC response
+	rsp := &pb.LoginUserResponse{
+		User:                  convertUser(user),
+		AccessToken:           accessToken,
+		RefreshToken:          refreshToken,
+		AccessTokenExpiresAt:  timestamppb.New(accessPayload.ExpiredAt),
+		RefreshTokenExpiresAt: timestamppb.New(refreshPayload.ExpiredAt),
+		SessionId:             refreshPayload.ID.String(),
 	}
 
 	return rsp, nil

@@ -7,7 +7,7 @@ import (
 
 	"github.com/lib/pq"
 	db "github.com/thinhcompany/simple-bank/db/sqlc"
-	pbv1 "github.com/thinhcompany/simple-bank/pb/pb/v1"
+	pb "github.com/thinhcompany/simple-bank/pb/pb/v1"
 	"github.com/thinhcompany/simple-bank/util"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -15,8 +15,8 @@ import (
 
 func (s *Server) CreateUser(
 	ctx context.Context,
-	req *pbv1.CreateUserRequest,
-) (*pbv1.CreateUserResponse, error) {
+	req *pb.CreateUserRequest,
+) (*pb.CreateUserResponse, error) {
 
 	// 1. Validate input
 	if err := validateCreateUserRequest(req); err != nil {
@@ -53,14 +53,14 @@ func (s *Server) CreateUser(
 	}
 
 	// 4. Build response
-	rsp := &pbv1.CreateUserResponse{
+	rsp := &pb.CreateUserResponse{
 		User: convertUser(user),
 	}
 
 	return rsp, nil
 }
 
-func validateCreateUserRequest(req *pbv1.CreateUserRequest) error {
+func validateCreateUserRequest(req *pb.CreateUserRequest) error {
 	if len(req.GetUsername()) < 3 {
 		return errors.New("username too short")
 	}

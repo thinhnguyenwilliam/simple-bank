@@ -10,7 +10,7 @@ import (
 	db "github.com/thinhcompany/simple-bank/db/sqlc"
 	"github.com/thinhcompany/simple-bank/gapi"
 
-	pbv1 "github.com/thinhcompany/simple-bank/pb/pb/v1"
+	pb "github.com/thinhcompany/simple-bank/pb/pb/v1"
 	"github.com/thinhcompany/simple-bank/util"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -47,7 +47,7 @@ func runGrpcServer(config util.Config, store db.Store) {
 	}
 
 	grpcServer := grpc.NewServer()
-	pbv1.RegisterSimpleBankServiceServer(grpcServer, server)
+	pb.RegisterSimpleBankServiceServer(grpcServer, server)
 
 	// ✅ Enable reflection
 	reflection.Register(grpcServer)

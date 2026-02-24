@@ -4,14 +4,14 @@ package gapi
 import (
 	db "github.com/thinhcompany/simple-bank/db/sqlc"
 
-	pbv1 "github.com/thinhcompany/simple-bank/pb/pb/v1"
+	pb "github.com/thinhcompany/simple-bank/pb/pb/v1"
 	"github.com/thinhcompany/simple-bank/token"
 
 	"github.com/thinhcompany/simple-bank/util"
 )
 
 type Server struct {
-	pbv1.UnimplementedSimpleBankServiceServer
+	pb.UnimplementedSimpleBankServiceServer
 	config     util.Config
 	store      db.Store
 	tokenMaker token.Maker
