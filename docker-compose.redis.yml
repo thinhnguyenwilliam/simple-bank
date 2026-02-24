@@ -1,0 +1,35 @@
+# docker network create simple-bank-network
+# asynqmon: http://192.168.1.8:8085/
+
+services:
+  redis:
+    image: redis:7
+    container_name: simple-bank-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    networks:
+      - simple-bank-network
+
+  asynqmon:
+    image: hibiken/asynqmon
+    container_name: simple-bank-asynqmon
+    restart: always
+    ports:
+      - "8085:8080"
+    environment:
+      REDIS_ADDR: redis:6379
+    depends_on:
+      - redis
+    networks:
+      - simple-bank-network
+
+volumes:
+  redis_data:
+
+networks:
+  simple-bank-network:
+    external: true

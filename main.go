@@ -6,9 +6,11 @@ import (
 	"log"
 	"net"
 
+	"github.com/hibiken/asynq"
 	"github.com/thinhcompany/simple-bank/api"
 	db "github.com/thinhcompany/simple-bank/db/sqlc"
 	"github.com/thinhcompany/simple-bank/gapi"
+	"github.com/thinhcompany/simple-bank/worker"
 
 	pb "github.com/thinhcompany/simple-bank/pb/pb/v1"
 	"github.com/thinhcompany/simple-bank/util"
@@ -36,12 +38,28 @@ func main() {
 	// Create store
 	store := db.NewStore(conn)
 
-	runGrpcServer(config, store)
+	//
+	redisOpt := asynq.RedisClientOpt{
+		Addr: config.RedisAddress,
+	}
+	taskDistributor := worker.NewRedisTaskDistributor(redisOpt)
+	go runTaskProcessor(redisOpt, store)
+	//
+	runGrpcServer(config, store, taskDistributor)
 	// runGinServer(config, store)
 }
 
-func runGrpcServer(config util.Config, store db.Store) {
-	server, err := gapi.NewServer(config, store)
+func runTaskProcessor(redisOpt asynq.RedisClientOpt, store db.Store) {
+	taskProcessor := worker.NewRedisTaskProcessor(redisOpt, store)
+
+	log.Println("starting task processor...")
+	if err := taskProcessor.Start(); err != nil {
+		log.Fatal("failed to start task processor:", err)
+	}
+}
+
+func runGrpcServer(config util.Config, store db.Store, taskDistributor worker.TaskDistributor) {
+	server, err := gapi.NewServer(config, store, taskDistributor)
 	if err != nil {
 		log.Fatal("cannot create grpc server:", err)
 	}

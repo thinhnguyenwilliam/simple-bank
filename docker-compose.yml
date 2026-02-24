@@ -1,6 +1,5 @@
 # simple-bank/docker-compose.yml
 
-
 services:
   postgres:
     image: postgres:16
@@ -49,4 +48,5 @@ volumes:
 
 networks:
   simple-bank-network:
-    driver: bridge
+    external: true
+    # driver: bridge

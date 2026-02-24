@@ -5,10 +5,13 @@ import (
 	"context"
 	"errors"
 
+	"github.com/hibiken/asynq"
 	"github.com/lib/pq"
+	"github.com/rs/zerolog/log"
 	db "github.com/thinhcompany/simple-bank/db/sqlc"
 	pb "github.com/thinhcompany/simple-bank/pb/pb/v1"
 	"github.com/thinhcompany/simple-bank/util"
+	"github.com/thinhcompany/simple-bank/worker"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -50,6 +53,23 @@ func (s *Server) CreateUser(
 		}
 
 		return nil, status.Error(codes.Internal, "failed to create user")
+	}
+
+	// after user created successfully send email
+	taskPayload := &worker.PayloadSendVerifyEmail{
+		Username: user.Username,
+		Email:    user.Email,
+	}
+
+	err = s.taskDistributor.DistributeTaskSendVerifyEmail(
+		ctx,
+		taskPayload,
+		asynq.Queue("critical"),
+		asynq.MaxRetry(10),
+	)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to enqueue verify email task")
+		// DO NOT return error
 	}
 
 	// 4. Build response
