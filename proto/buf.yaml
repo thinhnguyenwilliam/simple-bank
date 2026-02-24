@@ -1,0 +1,10 @@
+version: v1
+name: buf.build/thinh/simple-bank
+
+lint:
+  use:
+    - STANDARD
+
+breaking:
+  use:
+    - FILE

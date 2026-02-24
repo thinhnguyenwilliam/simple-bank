@@ -1,12 +1,12 @@
-// simple-bank\proto\rpc_login_user.proto
+// simple-bank/proto/pb/v1/service_simple_bank.proto
 syntax = "proto3";
 
-package pb;
+package pb.v1;
 
-option go_package = "github.com/thinhcompany/simple-bank/pb";
+option go_package = "github.com/thinhcompany/simple-bank/pb/v1;pbv1";
 
 import "google/protobuf/timestamp.proto";
-import "user.proto";
+import "pb/v1/user.proto";
 
 message LoginUserRequest {
   string username = 1;
