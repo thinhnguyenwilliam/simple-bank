@@ -4,7 +4,7 @@ package gapi
 import (
 	"context"
 
-	"github.com/thinhcompany/simple-bank/pb"
+	pbv1 "github.com/thinhcompany/simple-bank/pb/pb/v1"
 	"github.com/thinhcompany/simple-bank/util"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -13,8 +13,8 @@ import (
 
 func (s *Server) LoginUser(
 	ctx context.Context,
-	req *pb.LoginUserRequest,
-) (*pb.LoginUserResponse, error) {
+	req *pbv1.LoginUserRequest,
+) (*pbv1.LoginUserResponse, error) {
 
 	// 1. Validate input
 	if req.GetUsername() == "" || req.GetPassword() == "" {
@@ -55,7 +55,7 @@ func (s *Server) LoginUser(
 	}
 
 	// 5. Build response
-	rsp := &pb.LoginUserResponse{
+	rsp := &pbv1.LoginUserResponse{
 		User:                 convertUser(user),
 		AccessToken:          accessToken,
 		AccessTokenExpiresAt: timestamppb.New(payload.ExpiredAt),
