@@ -1,4 +1,6 @@
 // simple-bank\main.go
+// sudo lsof -i :9091
+// kill -9 492819
 package main
 
 import (

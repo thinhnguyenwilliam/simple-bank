@@ -30,10 +30,10 @@ POST {{baseUrl}}/users
 Content-Type: application/json
 
 {
-  "username": "bob1",
+  "username": "bob3",
   "password": "secret123",
   "full_name": "Bob Drake",
-  "email": "bob1@example.com"
+  "email": "bob3@example.com"
 }
 
 

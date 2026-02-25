@@ -4,6 +4,7 @@ package gapi
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/hibiken/asynq"
 	"github.com/lib/pq"
@@ -61,12 +62,20 @@ func (s *Server) CreateUser(
 		Email:    user.Email,
 	}
 
+	opts := []asynq.Option{
+		asynq.Queue("critical"),           // queue name
+		asynq.MaxRetry(10),                // retry attempts
+		asynq.Timeout(30 * time.Second),   // task execution timeout
+		asynq.ProcessIn(10 * time.Second), // delay execution
+		asynq.Deadline(time.Now().Add(1 * time.Hour)),
+	}
+
 	err = s.taskDistributor.DistributeTaskSendVerifyEmail(
 		ctx,
 		taskPayload,
-		asynq.Queue("critical"),
-		asynq.MaxRetry(10),
+		opts...,
 	)
+
 	if err != nil {
 		log.Error().Err(err).Msg("failed to enqueue verify email task")
 		// DO NOT return error
