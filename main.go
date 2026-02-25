@@ -2,10 +2,13 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"log"
 	"net"
+	"net/http"
 
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/hibiken/asynq"
 	"github.com/thinhcompany/simple-bank/api"
 	db "github.com/thinhcompany/simple-bank/db/sqlc"
@@ -16,6 +19,7 @@ import (
 	"github.com/thinhcompany/simple-bank/util"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+	"google.golang.org/protobuf/encoding/protojson"
 
 	_ "github.com/lib/pq"
 )
@@ -44,9 +48,59 @@ func main() {
 	}
 	taskDistributor := worker.NewRedisTaskDistributor(redisOpt)
 	go runTaskProcessor(redisOpt, store)
-	//
+	go runGatewayServer(config, store, taskDistributor)
 	runGrpcServer(config, store, taskDistributor)
-	// runGinServer(config, store)
+}
+
+func runGatewayServer(
+	config util.Config,
+	store db.Store,
+	taskDistributor worker.TaskDistributor,
+) {
+	server, err := gapi.NewServer(config, store, taskDistributor)
+	if err != nil {
+		log.Fatal("cannot create gRPC server:", err)
+	}
+
+	jsonOption := runtime.WithMarshalerOption(
+		runtime.MIMEWildcard,
+		&runtime.JSONPb{
+			MarshalOptions: protojson.MarshalOptions{
+				UseProtoNames:   true, // 👈 snake_case
+				EmitUnpopulated: true, // optional: include zero values
+			},
+			UnmarshalOptions: protojson.UnmarshalOptions{
+				DiscardUnknown: true,
+			},
+		},
+	)
+	grpcMux := runtime.NewServeMux(jsonOption)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	err = pb.RegisterSimpleBankServiceHandlerServer(
+		ctx,
+		grpcMux,
+		server,
+	)
+	if err != nil {
+		log.Fatal("cannot register gateway:", err)
+	}
+
+	mux := http.NewServeMux()
+	mux.Handle("/", grpcMux)
+
+	listener, err := net.Listen("tcp", config.HttpServerAddress)
+	if err != nil {
+		log.Fatal("cannot create listener:", err)
+	}
+
+	log.Printf("🌐 HTTP Gateway listening at %s", listener.Addr().String())
+
+	if err := http.Serve(listener, mux); err != nil {
+		log.Fatal("cannot start HTTP gateway:", err)
+	}
 }
 
 func runTaskProcessor(redisOpt asynq.RedisClientOpt, store db.Store) {

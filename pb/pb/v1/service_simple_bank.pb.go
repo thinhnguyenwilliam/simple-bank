@@ -9,6 +9,7 @@
 package pbv1
 
 import (
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -26,11 +27,11 @@ var File_pb_v1_service_simple_bank_proto protoreflect.FileDescriptor
 
 const file_pb_v1_service_simple_bank_proto_rawDesc = "" +
 	"\n" +
-	"\x1fpb/v1/service_simple_bank.proto\x12\x05pb.v1\x1a\x1bpb/v1/rpc_create_user.proto\x1a\x1apb/v1/rpc_login_user.proto2\x96\x01\n" +
-	"\x11SimpleBankService\x12A\n" +
+	"\x1fpb/v1/service_simple_bank.proto\x12\x05pb.v1\x1a\x1bpb/v1/rpc_create_user.proto\x1a\x1apb/v1/rpc_login_user.proto\x1a\x1cgoogle/api/annotations.proto2\xc8\x01\n" +
+	"\x11SimpleBankService\x12W\n" +
 	"\n" +
-	"CreateUser\x12\x18.pb.v1.CreateUserRequest\x1a\x19.pb.v1.CreateUserResponse\x12>\n" +
-	"\tLoginUser\x12\x17.pb.v1.LoginUserRequest\x1a\x18.pb.v1.LoginUserResponseB0Z.github.com/thinhcompany/simple-bank/pb/v1;pbv1b\x06proto3"
+	"CreateUser\x12\x18.pb.v1.CreateUserRequest\x1a\x19.pb.v1.CreateUserResponse\"\x14\x82\xd3\xe4\x93\x02\x0e:\x01*\"\t/v1/users\x12Z\n" +
+	"\tLoginUser\x12\x17.pb.v1.LoginUserRequest\x1a\x18.pb.v1.LoginUserResponse\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/v1/users/loginB0Z.github.com/thinhcompany/simple-bank/pb/v1;pbv1b\x06proto3"
 
 var file_pb_v1_service_simple_bank_proto_goTypes = []any{
 	(*CreateUserRequest)(nil),  // 0: pb.v1.CreateUserRequest

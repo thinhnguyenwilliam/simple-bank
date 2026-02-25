@@ -2,7 +2,8 @@
 .PHONY: migrate_up migrate_down migrate_down1 migrate_force sqlc migrate-create migrate_up1 \
 		test test-sqlc server air mock test-api test-util test-token test-only-fuction \
 		docker-build docker-run go-build clean compose-up compose-down dbdocs \
-		dbdocs-set-password gen evans proto proto-lint proto-gen compose-up-redis
+		dbdocs-set-password gen evans proto proto-lint proto-gen compose-up-redis \
+		proto-2
 
 DB_URL=postgres://admin:admin123@localhost:5432/simplebank?sslmode=disable
 
@@ -14,10 +15,11 @@ APP_NAME=simple-bank
 BUILD_DIR=bin
 PASSWORD=secret123
 
-compose-up-redis:
-	docker compose -f docker-compose.redis.yml up -d
+proto-update:
+	cd proto && buf dep update
 
 proto: proto-lint proto-gen
+proto-2: proto-update proto-gen
 
 proto-lint:
 	cd proto && buf lint
@@ -27,6 +29,9 @@ proto-gen:
 
 evans:
 	evans -r repl -p 9091
+
+compose-up-redis:
+	docker compose -f docker-compose.redis.yml up -d
 
 gen:
 	rm -f pb/*.go

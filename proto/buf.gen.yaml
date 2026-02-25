@@ -1,3 +1,4 @@
+# simple-bank/proto/buf.gen.yaml
 version: v1
 plugins:
   - plugin: go
@@ -5,5 +6,9 @@ plugins:
     opt: paths=source_relative
 
   - plugin: go-grpc
+    out: ../pb
+    opt: paths=source_relative
+
+  - plugin: grpc-gateway
     out: ../pb
     opt: paths=source_relative

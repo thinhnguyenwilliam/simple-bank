@@ -1,5 +1,9 @@
+# simple-bank/proto/buf.yaml
 version: v1
 name: buf.build/thinh/simple-bank
+
+deps:
+  - buf.build/googleapis/googleapis
 
 lint:
   use:
