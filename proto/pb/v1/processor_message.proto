@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package pb.v1;
+option go_package = "github.com/thinhcompany/simple-bank/pb/v1;pbv1";
+import "pb/v1/memory_message.proto";
+
+message GPU {
+  string brand = 1;
+  string name  = 2;
+  double min_ghz = 3;
+  double max_ghz = 4;
+  Memory memory = 5;
+}
+
+message CPU {
+  string brand = 1;
+  string name = 2;
+  uint32 number_cores   = 3;
+  uint32 number_threads = 4;
+  double min_ghz = 5;
+  double max_ghz = 6;
+}

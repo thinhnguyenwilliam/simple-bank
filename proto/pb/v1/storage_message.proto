@@ -1,0 +1,18 @@
+// simple-bank/proto/pb/v1/storage_message.proto
+syntax = "proto3";
+
+package pb.v1;
+option go_package = "github.com/thinhcompany/simple-bank/pb/v1;pbv1";
+
+import "pb/v1/memory_message.proto";
+
+message Storage {
+  enum Driver {
+    DRIVER_UNSPECIFIED = 0;
+    DRIVER_HDD = 1;
+    DRIVER_SSD = 2;
+  }
+
+  Driver driver = 1;
+  Memory memory = 2;
+}

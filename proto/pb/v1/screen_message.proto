@@ -1,0 +1,22 @@
+// simple-bank/proto/pb/v1/screen_message.proto
+syntax = "proto3";
+package pb.v1;
+option go_package = "github.com/thinhcompany/simple-bank/pb/v1;pbv1";
+
+message Screen {
+  message Resolution {
+    uint32 width  = 1;
+    uint32 height = 2;
+  }
+
+  enum Panel {
+    PANEL_UNSPECIFIED = 0;
+    PANEL_IPS   = 1;
+    PANEL_OLED  = 2;
+  }
+
+  float size_inch = 1;
+  Resolution resolution = 2;
+  Panel panel = 3;
+  bool multitouch = 4;
+}

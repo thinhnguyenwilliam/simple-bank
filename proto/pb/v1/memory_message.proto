@@ -1,0 +1,20 @@
+// simple-bank/proto/pb/v1/memory_message.proto
+syntax = "proto3";
+
+package pb.v1;
+option go_package = "github.com/thinhcompany/simple-bank/pb/v1;pbv1";
+
+message Memory {
+  enum Unit {
+    UNIT_UNSPECIFIED = 0;
+    UNIT_BIT        = 1;
+    UNIT_BYTE       = 2;
+    UNIT_KILOBYTE   = 3;
+    UNIT_MEGABYTE   = 4;
+    UNIT_GIGABYTE   = 5;
+    UNIT_TERABYTE   = 6;
+  }
+
+  uint64 value = 1;
+  Unit unit    = 2;
+}

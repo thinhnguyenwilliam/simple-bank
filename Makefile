@@ -3,7 +3,7 @@
 		test test-sqlc server air mock test-api test-util test-token test-only-fuction \
 		docker-build docker-run go-build clean compose-up compose-down dbdocs \
 		dbdocs-set-password gen evans proto proto-lint proto-gen compose-up-redis \
-		proto-2
+		proto-2 laptop-server laptop-client
 
 DB_URL=postgres://admin:admin123@localhost:5432/simplebank?sslmode=disable
 
@@ -14,6 +14,12 @@ ENV_FILE=app.env
 APP_NAME=simple-bank
 BUILD_DIR=bin
 PASSWORD=secret123
+
+laptop-server:
+	go run ./cmd/server
+
+laptop-client:
+	go run ./cmd/client
 
 proto-update:
 	cd proto && buf dep update

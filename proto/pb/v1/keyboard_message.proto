@@ -1,0 +1,17 @@
+// simple-bank/proto/pb/v1/keyboard_message.proto
+syntax = "proto3";
+
+package pb.v1;
+option go_package = "github.com/thinhcompany/simple-bank/pb/v1;pbv1";
+
+message Keyboard {
+  enum Layout {
+    LAYOUT_UNSPECIFIED = 0;
+    LAYOUT_QWERTY = 1;
+    LAYOUT_QWERTZ = 2;
+    LAYOUT_AZERTY = 3;
+  }
+
+  Layout layout = 1;
+  bool backlit  = 2;
+}
