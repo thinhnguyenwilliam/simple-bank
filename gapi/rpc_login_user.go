@@ -67,12 +67,13 @@ func (s *Server) LoginUser(
 	}
 
 	// 6. Store session
+	mtdt := s.extractMetatada(ctx)
 	_, err = s.store.CreateSession(ctx, db.CreateSessionParams{
 		ID:           refreshPayload.ID,
 		Username:     user.Username,
 		RefreshToken: refreshToken,
-		UserAgent:    "", // gRPC metadata can be added later
-		ClientIp:     "",
+		UserAgent:    mtdt.UserAgent,
+		ClientIp:     mtdt.ClientIP,
 		IsBlocked:    false,
 		ExpiresAt:    refreshPayload.ExpiredAt,
 	})

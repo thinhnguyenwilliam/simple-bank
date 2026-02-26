@@ -15,6 +15,18 @@ APP_NAME=simple-bank
 BUILD_DIR=bin
 PASSWORD=secret123
 
+OPENSSL=openssl
+DAYS=3650
+CERT_DIR := cert
+
+CA_KEY := $(CERT_DIR)/ca-key.pem
+CA_CERT := $(CERT_DIR)/ca.pem
+SERVER_KEY := $(CERT_DIR)/server-key.pem
+SERVER_CSR := $(CERT_DIR)/server-req.pem
+SERVER_CERT := $(CERT_DIR)/server-cert.pem
+SERVER_EXT  := $(CERT_DIR)/server.ext
+
+
 laptop-server:
 	go run ./cmd/server
 
