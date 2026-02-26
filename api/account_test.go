@@ -20,8 +20,8 @@ import (
 	mockdb "github.com/thinhcompany/simple-bank/db/mock"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 )
 
 func randomAccount(owner string) db.Accounts {

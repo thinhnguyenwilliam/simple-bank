@@ -1,4 +1,3 @@
-// simple-bank/gapi/rpc_create_user.go
 package gapi
 
 import (
@@ -9,10 +8,12 @@ import (
 	"github.com/hibiken/asynq"
 	"github.com/lib/pq"
 	"github.com/rs/zerolog/log"
+
 	db "github.com/thinhcompany/simple-bank/db/sqlc"
 	pb "github.com/thinhcompany/simple-bank/pb/pb/v1"
 	"github.com/thinhcompany/simple-bank/util"
 	"github.com/thinhcompany/simple-bank/worker"
+
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -30,60 +31,58 @@ func (s *Server) CreateUser(
 	// 2. Hash password
 	hashedPassword, err := util.HashPassword(req.GetPassword())
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "cannot hash password")
+		return nil, status.Error(codes.Internal, "cannot hash password")
 	}
 
-	// 3. Create user in DB
-	arg := db.CreateUserParams{
-		Username:       req.GetUsername(),
-		HashedPassword: hashedPassword,
-		FullName:       req.GetFullName(),
-		Email:          req.GetEmail(),
-	}
-
-	user, err := s.store.CreateUser(ctx, arg)
+	// 3. Create user (DB ONLY)
+	txResult, err := s.store.TxCreateUser(ctx, db.TxCreateUserParams{
+		CreateUserParams: db.CreateUserParams{
+			Username:       req.GetUsername(),
+			HashedPassword: hashedPassword,
+			FullName:       req.GetFullName(),
+			Email:          req.GetEmail(),
+		},
+	})
 	if err != nil {
-		if pqErr, ok := err.(*pq.Error); ok {
-			// PostgreSQL unique violation error code
-			if pqErr.Code == "23505" {
-				return nil, status.Error(
-					codes.AlreadyExists,
-					"username or email already exists",
-				)
-			}
+		if pqErr, ok := err.(*pq.Error); ok && pqErr.Code == "23505" {
+			return nil, status.Error(
+				codes.AlreadyExists,
+				"username or email already exists",
+			)
 		}
-
 		return nil, status.Error(codes.Internal, "failed to create user")
 	}
 
-	// after user created successfully send email
+	// 4. Enqueue verify-email task (AFTER COMMIT)
 	taskPayload := &worker.PayloadSendVerifyEmail{
-		Username: user.Username,
-		Email:    user.Email,
+		Username: txResult.User.Username,
+		Email:    txResult.User.Email,
 	}
 
 	opts := []asynq.Option{
-		asynq.Queue("critical"),           // queue name
-		asynq.MaxRetry(10),                // retry attempts
-		asynq.Timeout(30 * time.Second),   // task execution timeout
-		asynq.ProcessIn(10 * time.Second), // delay execution
+		asynq.Queue("critical"),
+		asynq.MaxRetry(10),
+		asynq.Timeout(30 * time.Second),
+		asynq.ProcessIn(10 * time.Second),
 		asynq.Deadline(time.Now().Add(1 * time.Hour)),
 	}
 
 	err = s.taskDistributor.DistributeTaskSendVerifyEmail(
-		ctx,
+		context.Background(), // IMPORTANT
 		taskPayload,
 		opts...,
 	)
-
 	if err != nil {
-		log.Error().Err(err).Msg("failed to enqueue verify email task")
-		// DO NOT return error
+		log.Error().
+			Err(err).
+			Str("username", txResult.User.Username).
+			Msg("failed to enqueue verify email task")
+		// ❗ do NOT return error — user already created
 	}
 
-	// 4. Build response
+	// 5. Build response
 	rsp := &pb.CreateUserResponse{
-		User: convertUser(user),
+		User: convertUser(txResult.User),
 	}
 
 	return rsp, nil

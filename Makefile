@@ -3,7 +3,7 @@
 		test test-sqlc server air mock test-api test-util test-token test-only-fuction \
 		docker-build docker-run go-build clean compose-up compose-down dbdocs \
 		dbdocs-set-password gen evans proto proto-lint proto-gen compose-up-redis \
-		proto-2 laptop-server laptop-client
+		proto-2 laptop-server laptop-client stress-test
 
 DB_URL=postgres://admin:admin123@localhost:5432/simplebank?sslmode=disable
 
@@ -26,6 +26,16 @@ SERVER_CSR := $(CERT_DIR)/server-req.pem
 SERVER_CERT := $(CERT_DIR)/server-cert.pem
 SERVER_EXT  := $(CERT_DIR)/server.ext
 
+
+stress-test:
+	@echo "🚀 Stress testing CreateUser API..."
+	hey \
+		-n 1000 \
+		-c 50 \
+		-m POST \
+		-H "Content-Type: application/json" \
+		-D stress_test/body.json \
+		http://localhost:8084/v1/users
 
 laptop-server:
 	go run ./cmd/server

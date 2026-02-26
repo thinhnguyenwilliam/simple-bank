@@ -1,5 +1,4 @@
 syntax = "proto3";
-
 package pb.v1;
 option go_package = "github.com/thinhcompany/simple-bank/pb/v1;pbv1";
 
