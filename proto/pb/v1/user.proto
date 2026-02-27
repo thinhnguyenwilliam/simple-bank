@@ -7,6 +7,8 @@ option go_package = "github.com/thinhcompany/simple-bank/pb/v1;pbv1";
 
 import "google/protobuf/timestamp.proto";
 
+
+
 message User {
   string username = 1;
   string full_name = 2;

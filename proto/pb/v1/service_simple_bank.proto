@@ -9,13 +9,25 @@ import "pb/v1/rpc_create_user.proto";
 import "pb/v1/rpc_login_user.proto";
 import "google/api/annotations.proto";
 
+// Nếu buf lint + buf generate PASS → proto của bạn ĐÚNG.
+// IDE báo đỏ có thể bỏ qua an toàn.
+import "protoc-gen-openapiv2/options/annotations.proto";
+
 // SimpleBankService provides banking related gRPC APIs.
 service SimpleBankService {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
+    name: "Users"
+    description: "User management APIs"
+  };
 
   rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
     option (google.api.http) = {
       post: "/v1/users"
       body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create new user"
+      description: "Create a new user with username, email and password"
     };
   }
 
@@ -23,6 +35,10 @@ service SimpleBankService {
     option (google.api.http) = {
       post: "/v1/users/login"
       body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Login user"
+      description: "Authenticate user and return access token"
     };
   }
 }

@@ -19,7 +19,7 @@ func main() {
 	log.Println("🧑‍💻 client starting...")
 
 	// 1️⃣ Connect to gRPC server
-	conn, err := grpc.Dial(
+	conn, err := grpc.NewClient(
 		serverAddress,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)

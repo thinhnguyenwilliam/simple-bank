@@ -4,6 +4,7 @@ name: buf.build/thinh/simple-bank
 
 deps:
   - buf.build/googleapis/googleapis
+  - buf.build/grpc-ecosystem/grpc-gateway
 
 lint:
   use:

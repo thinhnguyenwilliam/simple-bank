@@ -1,14 +1,23 @@
 # simple-bank/proto/buf.gen.yaml
 version: v1
+
 plugins:
-  - plugin: go
+  - name: go
     out: ../pb
-    opt: paths=source_relative
+    opt:
+      - paths=source_relative
 
-  - plugin: go-grpc
+  - name: go-grpc
     out: ../pb
-    opt: paths=source_relative
+    opt:
+      - paths=source_relative
 
-  - plugin: grpc-gateway
+  - name: grpc-gateway
     out: ../pb
-    opt: paths=source_relative
+    opt:
+      - paths=source_relative
+
+  - name: openapiv2
+    out: ../doc/swagger
+    opt:
+      - logtostderr=true

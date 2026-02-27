@@ -1,6 +1,9 @@
 // simple-bank\main.go
 // sudo lsof -i :9091
 // kill -9 492819
+// http://192.168.1.8:8084/swagger-ui/
+// http://192.168.1.8:8084/swagger/simple_bank.swagger.json
+
 package main
 
 import (
@@ -12,6 +15,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/hibiken/asynq"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"github.com/thinhcompany/simple-bank/api"
 	db "github.com/thinhcompany/simple-bank/db/sqlc"
 	"github.com/thinhcompany/simple-bank/gapi"
@@ -64,12 +68,13 @@ func runGatewayServer(
 		log.Fatal("cannot create gRPC server:", err)
 	}
 
+	// ===== gRPC-Gateway mux =====
 	jsonOption := runtime.WithMarshalerOption(
 		runtime.MIMEWildcard,
 		&runtime.JSONPb{
 			MarshalOptions: protojson.MarshalOptions{
-				UseProtoNames:   true, // 👈 snake_case
-				EmitUnpopulated: true, // optional: include zero values
+				UseProtoNames:   true,
+				EmitUnpopulated: true,
 			},
 			UnmarshalOptions: protojson.UnmarshalOptions{
 				DiscardUnknown: true,
@@ -81,16 +86,32 @@ func runGatewayServer(
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	err = pb.RegisterSimpleBankServiceHandlerServer(
-		ctx,
-		grpcMux,
-		server,
-	)
-	if err != nil {
+	if err := pb.RegisterSimpleBankServiceHandlerServer(ctx, grpcMux, server); err != nil {
 		log.Fatal("cannot register gateway:", err)
 	}
 
+	// ===== HTTP mux (QUAN TRỌNG) =====
 	mux := http.NewServeMux()
+
+	// =========================
+	// 🧾 Serve Swagger JSON (STATIC FILE)
+	// =========================
+	swaggerFS := http.FileServer(http.Dir("./doc/swagger"))
+	mux.Handle("/swagger/",
+		http.StripPrefix("/swagger/", swaggerFS),
+	)
+
+	// =========================
+	// 🎨 Swagger UI
+	// =========================
+	swaggerUI := httpSwagger.Handler(
+		httpSwagger.URL("/swagger/pb/v1/service_simple_bank.swagger.json"),
+	)
+	mux.Handle("/swagger-ui/", swaggerUI)
+
+	// =========================
+	// gRPC Gateway (CUỐI CÙNG)
+	// =========================
 	mux.Handle("/", grpcMux)
 
 	listener, err := net.Listen("tcp", config.HttpServerAddress)
