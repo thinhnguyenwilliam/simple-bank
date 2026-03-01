@@ -1,8 +1,8 @@
+// simple-bank/gapi/rpc_create_user.go
 package gapi
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/hibiken/asynq"
@@ -24,8 +24,9 @@ func (s *Server) CreateUser(
 ) (*pb.CreateUserResponse, error) {
 
 	// 1. Validate input
-	if err := validateCreateUserRequest(req); err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
+	violations := validateCreateUserRequest(req)
+	if len(violations) > 0 {
+		return nil, invalidArgumentError(violations)
 	}
 
 	// 2. Hash password
@@ -86,17 +87,4 @@ func (s *Server) CreateUser(
 	}
 
 	return rsp, nil
-}
-
-func validateCreateUserRequest(req *pb.CreateUserRequest) error {
-	if len(req.GetUsername()) < 3 {
-		return errors.New("username too short")
-	}
-	if len(req.GetPassword()) < 6 {
-		return errors.New("password too short")
-	}
-	if !util.IsValidEmail(req.GetEmail()) {
-		return errors.New("invalid email")
-	}
-	return nil
 }

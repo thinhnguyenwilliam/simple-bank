@@ -28,10 +28,10 @@ POST {{baseUrl}}/users
 Content-Type: application/json
 
 {
-  "username": "bob6",
-  "password": "secret123",
-  "full_name": "Bob Drake",
-  "email": "bob6@example.com"
+  "username": "Marry3",
+  "password": "se",
+  "full_name": "Marry Houston",
+  "email": "marry8example.com"
 }
 
 

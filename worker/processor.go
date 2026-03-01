@@ -5,6 +5,7 @@ import (
 	"context"
 
 	"github.com/hibiken/asynq"
+	"github.com/rs/zerolog/log"
 	db "github.com/thinhcompany/simple-bank/db/sqlc"
 )
 
@@ -30,10 +31,20 @@ func NewRedisTaskProcessor(
 		redisOpt,
 		asynq.Config{
 			Concurrency: 10,
+			Logger:      NewLogger(),
 			Queues: map[string]int{
 				"critical": 6,
 				"default":  4,
 			},
+			ErrorHandler: asynq.ErrorHandlerFunc(
+				func(ctx context.Context, task *asynq.Task, err error) {
+					log.Error().
+						Err(err).
+						Str("type", task.Type()).
+						RawJSON("payload", task.Payload()).
+						Msg("process task failed")
+				},
+			),
 		},
 	)
 
