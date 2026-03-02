@@ -25,15 +25,11 @@ func (l *Logger) Print(level zerolog.Level, args ...interface{}) {
 	case zerolog.WarnLevel:
 		log.Warn().Msg(msg)
 	case zerolog.ErrorLevel:
-		log.Error().
-			Str("component", "asynq-worker").
-			Msg(fmt.Sprint(args...))
+		log.Error().Msg(msg)
 	case zerolog.FatalLevel:
 		log.Fatal().Msg(msg)
 	default:
-		log.Info().
-			Interface("args", args).
-			Msg("asynq log")
+		log.Info().Msg(msg)
 	}
 }
 

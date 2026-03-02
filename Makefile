@@ -119,6 +119,7 @@ docker-stop:
 ## Create new migration
 ## how to use: make migrate-create name=add_users
 # make migrate-create name=add_sessions
+# make migrate-create name=add_verify_emails
 migrate-create:
 	migrate create -ext sql -dir $(MIGRATE_PATH) -seq $(name)
 

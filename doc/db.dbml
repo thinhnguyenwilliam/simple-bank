@@ -7,26 +7,43 @@ Project simple_bank {
   '''
 }
 
-
-Table users as U {
-  username varchar [pk]
+Table users {
+  id bigserial [pk]
+  username varchar [unique, not null]
   hashed_password varchar [not null]
   full_name varchar [not null]
   email varchar [unique, not null]
+  is_email_verified boolean [not null, default: false]
   password_changed_at timestamptz [not null, default: '0001-01-01 00:00:00Z']
   created_at timestamptz [not null, default: `now()`]
 }
 
+Table verify_emails {
+  id bigserial [pk]
+  user_id bigint [not null, ref: > users.id]
+  email varchar [not null]
+  secret_code varchar [not null]
+  is_used boolean [not null, default: false]
+  created_at timestamptz [not null, default: `now()`]
+  expired_at timestamptz [not null, default: `now() + interval '15 minutes'`]
+
+  Indexes {
+    (user_id)
+    (email)
+    (secret_code)
+  }
+}
+
 Table accounts as A {
   id bigserial [pk]
-  owner varchar [ref: > U.username, not null]
+  user_id bigint [ref: > users.id, not null]
   balance bigint [not null]
   currency varchar [not null]
   created_at timestamptz [not null, default: `now()`]
 
   Indexes {
-    owner
-    (owner, currency) [unique]
+    user_id
+    (user_id, currency) [unique]
   }
 }
 
@@ -57,7 +74,7 @@ Table transfers {
 
 Table sessions {
   id uuid [pk]
-  username varchar [ref: > U.username, not null]
+  user_id bigint [ref: > users.id, not null]
   refresh_token varchar [not null]
   user_agent varchar [not null]
   client_ip varchar [not null]
@@ -66,6 +83,6 @@ Table sessions {
   created_at timestamptz [not null, default: `now()`]
 
   Indexes {
-    username
+    user_id
   }
 }

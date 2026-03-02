@@ -6,9 +6,12 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/hibiken/asynq"
 	"github.com/rs/zerolog/log"
+	db "github.com/thinhcompany/simple-bank/db/sqlc"
+	"github.com/thinhcompany/simple-bank/util"
 )
 
 const TaskSendVerifyEmail = "task:send_verify_email"
@@ -72,13 +75,56 @@ func (p *RedisTaskProcessor) ProcessSendVerifyEmail(
 		return err
 	}
 
-	// TODO: generate verify token & save to DB
-	// TODO: send verification email
+	// Create verify email record
+	verifyEmail, err := p.store.CreateVerifyEmail(
+		ctx,
+		db.CreateVerifyEmailParams{
+			Username:   user.Username,
+			Email:      user.Email,
+			SecretCode: util.RandomString(32),
+			ExpiredAt:  time.Now().Add(15 * time.Minute),
+		},
+	)
+	if err != nil {
+		return err
+	}
+
+	// Build verify URL
+	verifyURL := fmt.Sprintf(
+		"https://example.com/verify-email?id=%d&secret_code=%s",
+		verifyEmail.ID,
+		verifyEmail.SecretCode,
+	)
+
+	// Email content
+	subject := "Verify your email address"
+	content := fmt.Sprintf(`
+		<h2>Hello %s 👋</h2>
+		<p>Please click the link below to verify your email:</p>
+		<a href="%s">Verify Email</a>
+		<p>This link will expire in 15 minutes.</p>
+	`, user.FullName, verifyURL)
+
+	to := []string{user.Email}
+
+	// Send email
+	err = p.mailer.SendEmail(
+		subject,
+		content,
+		to,
+		nil,
+		nil,
+		nil,
+	)
+	if err != nil {
+		return err
+	}
 
 	log.Info().
 		Str("task", task.Type()).
 		Str("username", user.Username).
-		Str("email", user.Email).
+		Str("to", user.Email).
+		Str("subject", subject).
 		Msg("processed send verify email task")
 
 	return nil

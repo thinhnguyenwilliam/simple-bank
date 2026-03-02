@@ -1,7 +1,5 @@
 https://dbdiagram.io/d/Simple-bank-6928772aa0c4ebcc2b06b437
 
-
-
 Table users as U {
   username varchar [pk]
   hashed_password varchar [not null]

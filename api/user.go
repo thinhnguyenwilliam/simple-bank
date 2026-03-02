@@ -24,6 +24,7 @@ type userResponse struct {
 	Username          string `json:"username"`
 	FullName          string `json:"full_name"`
 	Email             string `json:"email"`
+	IsEmailVerified   bool   `json:"is_email_verified"`
 	PasswordChangedAt string `json:"password_changed_at"`
 	CreatedAt         string `json:"created_at"`
 }
@@ -33,6 +34,7 @@ func newUserResponse(user db.Users) userResponse {
 		Username:          user.Username,
 		FullName:          user.FullName,
 		Email:             user.Email,
+		IsEmailVerified:   user.IsEmailVerified,
 		PasswordChangedAt: user.PasswordChangedAt.Format(time.RFC3339),
 		CreatedAt:         user.CreatedAt.Format(time.RFC3339),
 	}

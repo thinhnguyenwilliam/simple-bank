@@ -16,6 +16,7 @@ type Querier interface {
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Sessions, error)
 	CreateTransfer(ctx context.Context, arg CreateTransferParams) (Transfers, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (Users, error)
+	CreateVerifyEmail(ctx context.Context, arg CreateVerifyEmailParams) (VerifyEmails, error)
 	DeleteAccount(ctx context.Context, id int64) error
 	DeleteSession(ctx context.Context, id uuid.UUID) error
 	DeleteUser(ctx context.Context, username string) error
@@ -23,16 +24,20 @@ type Querier interface {
 	GetEntry(ctx context.Context, id int64) (Entries, error)
 	GetSession(ctx context.Context, id uuid.UUID) (Sessions, error)
 	GetTransfer(ctx context.Context, id int64) (Transfers, error)
-	GetUser(ctx context.Context, username string) (Users, error)
-	GetUserByEmail(ctx context.Context, email string) (Users, error)
+	GetUser(ctx context.Context, username string) (GetUserRow, error)
+	GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error)
+	GetVerifyEmailByID(ctx context.Context, id int64) (VerifyEmails, error)
+	GetVerifyEmailBySecretCode(ctx context.Context, secretCode string) (VerifyEmails, error)
 	ListAccounts(ctx context.Context, arg ListAccountsParams) ([]Accounts, error)
 	ListEntries(ctx context.Context, arg ListEntriesParams) ([]Entries, error)
 	ListSessionsByUsername(ctx context.Context, username string) ([]Sessions, error)
 	ListTransfers(ctx context.Context, arg ListTransfersParams) ([]Transfers, error)
 	ListUsers(ctx context.Context, arg ListUsersParams) ([]ListUsersRow, error)
+	MarkVerifyEmailUsed(ctx context.Context, id int64) error
 	UpdateAccount(ctx context.Context, arg UpdateAccountParams) (Accounts, error)
 	UpdateSessionBlocked(ctx context.Context, arg UpdateSessionBlockedParams) error
 	UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) (Users, error)
+	VerifyUserEmailTx(ctx context.Context, username string) error
 }
 
 var _ Querier = (*Queries)(nil)
