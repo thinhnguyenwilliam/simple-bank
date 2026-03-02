@@ -1,10 +1,14 @@
 // simple-bank/cmd/client/main.go
+// go run cmd/client/main.go -tls
+//
+//	sudo cp /home/thinh/WorkSpace/github.com/thinhnguyenwilliam/simple-bank/cert/server-cert.pem cert
 package main
 
 import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -15,6 +19,7 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 func loadTLSCredentials() (credentials.TransportCredentials, error) {
@@ -48,20 +53,31 @@ func loadTLSCredentials() (credentials.TransportCredentials, error) {
 	return credentials.NewTLS(tlsConfig), nil
 }
 
-const serverAddress = "localhost:50051"
+const serverAddress = "localhost:8080"
 
 func main() {
-	log.Println("🧑‍💻 client starting...")
-	tlsCreds, err := loadTLSCredentials()
-	if err != nil {
-		log.Fatalf("cannot load TLS credentials: %v", err)
+	enableTLS := flag.Bool("tls", false, "Enable SSL/TLS")
+	flag.Parse()
+
+	log.Printf("🧑‍💻 client starting... TLS=%v", *enableTLS)
+
+	var opts []grpc.DialOption
+
+	if *enableTLS {
+		tlsCreds, err := loadTLSCredentials()
+		if err != nil {
+			log.Fatalf("cannot load TLS credentials: %v", err)
+		}
+
+		opts = append(opts, grpc.WithTransportCredentials(tlsCreds))
+		log.Println("🔐 client using mTLS")
+	} else {
+		opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		log.Println("⚠️  client using insecure connection")
 	}
 
 	// 1️⃣ Connect to gRPC server
-	conn, err := grpc.NewClient(
-		serverAddress,
-		grpc.WithTransportCredentials(tlsCreds),
-	)
+	conn, err := grpc.NewClient(serverAddress, opts...)
 	if err != nil {
 		log.Fatalf("cannot connect to server: %v", err)
 	}

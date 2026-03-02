@@ -1,9 +1,15 @@
 // simple-bank/cmd/server/main.go
+// Có TLS / mTLS:  go run cmd/server/main.go -port 50051 -tls
+// Không TLS (dev nhanh): go run cmd/server/main.go
+// go run cmd/server/main.go -port 50051 -tls
+// go run cmd/server/main.go -port 50052 -tls
+// go run cmd/server/main.go -port 50053
 package main
 
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"flag"
 	"fmt"
 	"log"
 	"net"
@@ -53,10 +59,14 @@ func loadTLSCredentials() (credentials.TransportCredentials, error) {
 	return credentials.NewTLS(tlsConfig), nil
 }
 
-const grpcAddress = ":50051"
-
 func main() {
-	log.Println("🚀 server starting...")
+	// 0️⃣ Flags
+	port := flag.String("port", "50051", "gRPC server port")
+	enableTLS := flag.Bool("tls", false, "Enable SSL/TLS")
+	flag.Parse()
+
+	grpcAddress := ":" + *port
+	log.Printf("🚀 server starting... TLS=%v", *enableTLS)
 
 	// 1️⃣ Load env
 	if err := godotenv.Load("app.env"); err != nil {
@@ -79,22 +89,35 @@ func main() {
 		log.Fatalf("auto migrate failed: %v", err)
 	}
 
-	// 4️⃣ Init store
+	// 4️⃣ Init store + service
 	laptopStore := service.NewDBLaptopStore(db)
-
-	// 5️⃣ Init gRPC server
 	laptopServer := service.NewLaptopServer(laptopStore)
 
-	tlsCreds, err := loadTLSCredentials()
-	if err != nil {
-		log.Fatalf("cannot load TLS credentials: %v", err)
+	// 5️⃣ Init gRPC server
+	var grpcServer *grpc.Server
+
+	if *enableTLS {
+		tlsCreds, err := loadTLSCredentials()
+		if err != nil {
+			log.Fatalf("cannot load TLS credentials: %v", err)
+		}
+
+		grpcServer = grpc.NewServer(
+			grpc.Creds(tlsCreds),
+			interceptor.Unary(),
+			interceptor.Stream(),
+		)
+
+		log.Println("🔐 gRPC running with TLS (mTLS enabled)")
+	} else {
+		grpcServer = grpc.NewServer(
+			interceptor.Unary(),
+			interceptor.Stream(),
+		)
+
+		log.Println("⚠️  gRPC running WITHOUT TLS")
 	}
 
-	grpcServer := grpc.NewServer(
-		grpc.Creds(tlsCreds),
-		interceptor.Unary(),
-		interceptor.Stream(),
-	)
 	pb.RegisterLaptopServiceServer(grpcServer, laptopServer)
 
 	// 6️⃣ Listen
@@ -105,6 +128,7 @@ func main() {
 
 	log.Printf("📡 gRPC server listening on %s", grpcAddress)
 	reflection.Register(grpcServer)
+
 	// 7️⃣ Serve
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("cannot serve gRPC: %v", err)
