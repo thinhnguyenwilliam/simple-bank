@@ -3,7 +3,8 @@
 		test test-sqlc server air mock test-api test-util test-token test-only-fuction \
 		docker-build docker-run go-build clean compose-up compose-down dbdocs \
 		dbdocs-set-password gen evans proto proto-lint proto-gen compose-up-redis \
-		proto-2 laptop-server laptop-client stress-test
+		proto-2 laptop-server laptop-client stress-test ca show cert-server sign-server \
+		show-server-cert verify-server client-cert sign-client
 
 DB_URL=postgres://admin:admin123@localhost:5432/simplebank?sslmode=disable
 
@@ -20,11 +21,68 @@ DAYS=3650
 CERT_DIR := cert
 
 CA_KEY := $(CERT_DIR)/ca-key.pem
-CA_CERT := $(CERT_DIR)/ca.pem
+CA_CERT := $(CERT_DIR)/ca-cert.pem
 SERVER_KEY := $(CERT_DIR)/server-key.pem
 SERVER_CSR := $(CERT_DIR)/server-req.pem
 SERVER_CERT := $(CERT_DIR)/server-cert.pem
 SERVER_EXT  := $(CERT_DIR)/server.ext
+
+sign-client:
+	$(OPENSSL) x509 -req \
+		-in $(CERT_DIR)/client-req.pem \
+		-CA $(CA_CERT) \
+		-CAkey $(CA_KEY) \
+		-CAcreateserial \
+		-out $(CERT_DIR)/client-cert.pem \
+		-days $(DAYS) \
+		-extfile $(CERT_DIR)/client.ext
+
+client-cert:
+	$(OPENSSL) req -newkey rsa:4096 \
+		-nodes \
+		-keyout $(CERT_DIR)/client-key.pem \
+		-out $(CERT_DIR)/client-req.pem \
+		-config $(CERT_DIR)/client.conf
+
+
+verify-server:
+	$(OPENSSL) verify -CAfile $(CA_CERT) $(SERVER_CERT)
+
+sign-server:
+	$(OPENSSL) x509 -req \
+		-in $(SERVER_CSR) \
+		-CA $(CA_CERT) \
+		-CAkey $(CA_KEY) \
+		-CAcreateserial \
+		-out $(SERVER_CERT) \
+		-days $(DAYS) \
+		-extfile $(SERVER_EXT)
+
+# Server certificate signing request (CSR)
+cert-server:
+	$(OPENSSL) req -newkey rsa:4096 \
+		-nodes \
+		-keyout $(SERVER_KEY) \
+		-out $(SERVER_CSR) \
+		-config $(CERT_DIR)/server.conf
+
+# Show CA cert details
+show:
+	$(OPENSSL) x509 -in $(CA_CERT) -noout -text
+
+#
+show-server-cert:
+	$(OPENSSL) x509 -in $(SERVER_CERT) -noout -text
+
+# Root CA
+ca:
+# 	mkdir -p $(CERT_DIR)
+	$(OPENSSL) req -x509 -newkey rsa:4096 \
+		-days $(DAYS) \
+		-nodes \
+		-keyout $(CA_KEY) \
+		-out $(CA_CERT) \
+		-config $(CERT_DIR)/ca.conf
 
 
 stress-test:

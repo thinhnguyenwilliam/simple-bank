@@ -2,6 +2,9 @@
 package main
 
 import (
+	"crypto/tls"
+	"crypto/x509"
+	"fmt"
 	"log"
 	"net"
 	"os"
@@ -13,10 +16,42 @@ import (
 
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/reflection"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
+
+func loadTLSCredentials() (credentials.TransportCredentials, error) {
+	// 1️⃣ Load server cert & key
+	serverCert, err := tls.LoadX509KeyPair(
+		"cert/server-cert.pem",
+		"cert/server-key.pem",
+	)
+	if err != nil {
+		return nil, fmt.Errorf("cannot load server cert/key: %w", err)
+	}
+
+	// 2️⃣ Load CA cert (để verify CLIENT cert)
+	pemCA, err := os.ReadFile("cert/ca-cert.pem")
+	if err != nil {
+		return nil, fmt.Errorf("cannot read CA cert: %w", err)
+	}
+
+	certPool := x509.NewCertPool()
+	if !certPool.AppendCertsFromPEM(pemCA) {
+		return nil, fmt.Errorf("failed to add CA cert to pool")
+	}
+
+	// 3️⃣ TLS config (mTLS)
+	tlsConfig := &tls.Config{
+		Certificates: []tls.Certificate{serverCert},
+		ClientCAs:    certPool, // dùng CA để verify client
+		ClientAuth:   tls.RequireAndVerifyClientCert,
+	}
+
+	return credentials.NewTLS(tlsConfig), nil
+}
 
 const grpcAddress = ":50051"
 
@@ -50,7 +85,13 @@ func main() {
 	// 5️⃣ Init gRPC server
 	laptopServer := service.NewLaptopServer(laptopStore)
 
+	tlsCreds, err := loadTLSCredentials()
+	if err != nil {
+		log.Fatalf("cannot load TLS credentials: %v", err)
+	}
+
 	grpcServer := grpc.NewServer(
+		grpc.Creds(tlsCreds),
 		interceptor.Unary(),
 		interceptor.Stream(),
 	)
