@@ -235,10 +235,10 @@ func (mr *MockStoreMockRecorder) GetTransfer(ctx, id any) *gomock.Call {
 }
 
 // GetUser mocks base method.
-func (m *MockStore) GetUser(ctx context.Context, username string) (db.GetUserRow, error) {
+func (m *MockStore) GetUser(ctx context.Context, username string) (db.Users, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUser", ctx, username)
-	ret0, _ := ret[0].(db.GetUserRow)
+	ret0, _ := ret[0].(db.Users)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

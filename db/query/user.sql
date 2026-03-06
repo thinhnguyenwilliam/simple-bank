@@ -10,13 +10,7 @@ INSERT INTO users (
 RETURNING *;
 
 -- name: GetUser :one
-SELECT
-  username,
-  hashed_password,
-  full_name,
-  email,
-  password_changed_at,
-  created_at
+SELECT *
 FROM users
 WHERE username = $1
 LIMIT 1;

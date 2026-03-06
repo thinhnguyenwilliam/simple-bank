@@ -1,30 +1,23 @@
 # simple-bank/Dockerfile
+# docker build -t simple-bank . --no-cache
+# docker run -p 8084:8084 simple-bank
+# docker logs <container_id>
 
-# =========================
-# Build Stage
-# =========================
-FROM golang:1.26-alpine AS builder
+# build stage
+FROM golang:1.24-alpine AS builder
 
 WORKDIR /app
-
-COPY go.mod go.sum ./
-RUN go mod download
-
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o simple-bank main.go
+RUN go mod download
+RUN go build -o main .
 
-
-# =========================
-# Run Stage
-# =========================
-FROM alpine:latest
+# runtime stage
+FROM alpine:3.20
 
 WORKDIR /app
-
-COPY --from=builder /app/simple-bank .
-COPY app.env .
+COPY --from=builder /app/main .
 
 EXPOSE 8084
 
-CMD ["./simple-bank"]
+CMD ["./main"]

@@ -24,7 +24,7 @@ type Querier interface {
 	GetEntry(ctx context.Context, id int64) (Entries, error)
 	GetSession(ctx context.Context, id uuid.UUID) (Sessions, error)
 	GetTransfer(ctx context.Context, id int64) (Transfers, error)
-	GetUser(ctx context.Context, username string) (GetUserRow, error)
+	GetUser(ctx context.Context, username string) (Users, error)
 	GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error)
 	GetVerifyEmailByID(ctx context.Context, id int64) (VerifyEmails, error)
 	GetVerifyEmailBySecretCode(ctx context.Context, secretCode string) (VerifyEmails, error)

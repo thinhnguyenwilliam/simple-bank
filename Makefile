@@ -144,10 +144,11 @@ compose-down-v:
 
 
 go-build:
-	go build -o $(BUILD_DIR)/$(APP_NAME).exe .
+	mkdir -p $(BUILD_DIR)
+	go build -o $(BUILD_DIR)/$(APP_NAME) .
 
 clean:
-	if exist $(BUILD_DIR)\$(APP_NAME).exe del $(BUILD_DIR)\$(APP_NAME).exe
+	rm -f $(BUILD_DIR)/$(APP_NAME)
 
 
 # ========================

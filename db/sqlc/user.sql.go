@@ -60,30 +60,15 @@ func (q *Queries) DeleteUser(ctx context.Context, username string) error {
 }
 
 const getUser = `-- name: GetUser :one
-SELECT
-  username,
-  hashed_password,
-  full_name,
-  email,
-  password_changed_at,
-  created_at
+SELECT username, hashed_password, full_name, email, password_changed_at, created_at, is_email_verified
 FROM users
 WHERE username = $1
 LIMIT 1
 `
 
-type GetUserRow struct {
-	Username          string    `json:"username"`
-	HashedPassword    string    `json:"hashed_password"`
-	FullName          string    `json:"full_name"`
-	Email             string    `json:"email"`
-	PasswordChangedAt time.Time `json:"password_changed_at"`
-	CreatedAt         time.Time `json:"created_at"`
-}
-
-func (q *Queries) GetUser(ctx context.Context, username string) (GetUserRow, error) {
+func (q *Queries) GetUser(ctx context.Context, username string) (Users, error) {
 	row := q.db.QueryRowContext(ctx, getUser, username)
-	var i GetUserRow
+	var i Users
 	err := row.Scan(
 		&i.Username,
 		&i.HashedPassword,
@@ -91,6 +76,7 @@ func (q *Queries) GetUser(ctx context.Context, username string) (GetUserRow, err
 		&i.Email,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
+		&i.IsEmailVerified,
 	)
 	return i, err
 }
