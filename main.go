@@ -31,6 +31,9 @@ import (
 )
 
 func main() {
+	util.SetupLogger("api")
+	log.Println("🚀 Starting simple-bank API")
+
 	// Load config
 	config, err := util.LoadConfig(".")
 	if err != nil {

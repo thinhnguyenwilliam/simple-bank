@@ -16,6 +16,7 @@ import (
 )
 
 func main() {
+	util.SetupLogger("worker")
 	log.Println("🚀 starting worker service...")
 
 	// Load config
