@@ -16,5 +16,6 @@ migrate \
   -database "$DB_SOURCE" \
   up
 
-echo "▶️ Starting API server"
-exec /app/main
+echo "▶️ Starting service: $1"
+
+exec "$@"

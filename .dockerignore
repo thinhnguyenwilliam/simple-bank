@@ -1,0 +1,17 @@
+# simple-bank/.dockerignore
+
+.git
+.gitignore
+Dockerfile
+docker-compose*
+
+tmp
+logs
+*.log
+
+
+
+node_modules
+vendor
+
+*.md

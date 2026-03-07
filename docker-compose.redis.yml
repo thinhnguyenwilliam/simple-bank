@@ -1,13 +1,20 @@
 # docker network create simple-bank-network
 # asynqmon: http://192.168.1.8:8085/
+# 	docker compose -f docker-compose.redis.yml up -d
+# docker exec -it simple-bank-redis redis-cli, type: ping-->PONG
 
 services:
   redis:
     image: redis:7
     container_name: simple-bank-redis
-    restart: always
+    restart: unless-stopped
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
     command: ["redis-server", "--appendonly", "yes"]
     volumes:
       - redis_data:/data
@@ -17,7 +24,7 @@ services:
   asynqmon:
     image: hibiken/asynqmon
     container_name: simple-bank-asynqmon
-    restart: always
+    restart: unless-stopped
     ports:
       - "8085:8080"
     environment:
