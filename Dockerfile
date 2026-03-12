@@ -33,7 +33,7 @@ COPY --from=builder /usr/local/bin/migrate /usr/local/bin/migrate
 
 COPY db/migrations db/migrations
 COPY start.sh .
-COPY app.env .
+# COPY app.env .
 
 RUN chmod +x start.sh
 
