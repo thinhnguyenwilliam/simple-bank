@@ -13,6 +13,10 @@ import (
 	"net"
 	"net/http"
 
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/hibiken/asynq"
 	httpSwagger "github.com/swaggo/http-swagger"
@@ -171,4 +175,19 @@ func runGinServer(config util.Config, store db.Store) {
 	if err := server.Run(config.HttpServerAddress); err != nil {
 		log.Fatal("cannot start server:", err)
 	}
+}
+func runMigration(migrationURL string, dbSource string) {
+	migration, err := migrate.New(
+		migrationURL,
+		dbSource,
+	)
+	if err != nil {
+		log.Fatal("cannot create migration instance:", err)
+	}
+
+	if err := migration.Up(); err != nil && err != migrate.ErrNoChange {
+		log.Fatal("failed to run migration:", err)
+	}
+
+	log.Println("✅ database migrated successfully")
 }
