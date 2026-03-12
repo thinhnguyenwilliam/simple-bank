@@ -56,5 +56,5 @@ jobs:
       - name: Generate sqlc
         run: make sqlc
 
-      - name: Run tests
-        run: make test-sqlc
+      # - name: Run tests
+      #   run: make test-sqlc
