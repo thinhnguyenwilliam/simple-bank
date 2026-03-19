@@ -16,6 +16,7 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/rs/cors"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/hibiken/asynq"
@@ -128,7 +129,18 @@ func runGatewayServer(
 
 	log.Printf("🌐 HTTP Gateway listening at %s", listener.Addr().String())
 
-	if err := http.Serve(listener, mux); err != nil {
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{
+			"http://localhost:5173",
+		},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"*"},
+		AllowCredentials: true,
+	})
+
+	handler := c.Handler(mux)
+
+	if err := http.Serve(listener, handler); err != nil {
 		log.Fatal("cannot start HTTP gateway:", err)
 	}
 }

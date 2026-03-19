@@ -36,6 +36,7 @@ type Querier interface {
 	MarkVerifyEmailUsed(ctx context.Context, id int64) error
 	UpdateAccount(ctx context.Context, arg UpdateAccountParams) (Accounts, error)
 	UpdateSessionBlocked(ctx context.Context, arg UpdateSessionBlockedParams) error
+	UpdateUser(ctx context.Context, arg UpdateUserParams) (Users, error)
 	UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) (Users, error)
 	VerifyUserEmailTx(ctx context.Context, username string) error
 }

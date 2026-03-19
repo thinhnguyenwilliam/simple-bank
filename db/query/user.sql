@@ -1,3 +1,15 @@
+-- name: UpdateUser :one
+UPDATE users
+SET
+  hashed_password = CASE
+    WHEN $1 = true THEN $2
+    ELSE hashed_password
+  END,
+  full_name = $3,
+  email = $4
+WHERE username = $5
+RETURNING *;
+
 -- name: CreateUser :one
 INSERT INTO users (
   username,

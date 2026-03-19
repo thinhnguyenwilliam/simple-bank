@@ -4,7 +4,7 @@
 		docker-build docker-run go-build clean compose-up compose-down dbdocs \
 		dbdocs-set-password gen evans proto proto-lint proto-gen compose-up-redis \
 		proto-2 laptop-server laptop-client stress-test ca show cert-server sign-server \
-		show-server-cert verify-server client-cert sign-client
+		show-server-cert verify-server client-cert sign-client rand-secure
 
 DB_URL=postgres://admin:admin123@localhost:5432/simplebank?sslmode=disable
 
@@ -26,6 +26,9 @@ SERVER_KEY := $(CERT_DIR)/server-key.pem
 SERVER_CSR := $(CERT_DIR)/server-req.pem
 SERVER_CERT := $(CERT_DIR)/server-cert.pem
 SERVER_EXT  := $(CERT_DIR)/server.ext
+
+rand-secure:
+	openssl rand -base64 32
 
 sign-client:
 	$(OPENSSL) x509 -req \
