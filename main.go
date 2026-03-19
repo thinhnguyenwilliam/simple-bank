@@ -132,10 +132,19 @@ func runGatewayServer(
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{
 			"http://localhost:5173",
+			"http://192.168.1.8:5175",
 		},
-		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-		AllowedHeaders:   []string{"*"},
+		AllowedMethods: []string{
+			"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS",
+		},
+		AllowedHeaders: []string{
+			"Origin", "Content-Type", "Authorization",
+		},
+		ExposedHeaders: []string{
+			"Content-Length",
+		},
 		AllowCredentials: true,
+		MaxAge:           12 * 60 * 60, // 12 giờ
 	})
 
 	handler := c.Handler(mux)

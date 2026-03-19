@@ -3,6 +3,15 @@
 @refresh_token = v2.local.donVmdYc4pzGA11fl47-mqgdYnQ3ExuMpJoF5kT7wmpcvBCIG2AYO5HbF7t6pThfNaYPJqZ0gjzfvMot1QVn-fyafjgBqBymord61-QslfUaMpLDbkfHZ9XMt1Zw6YvkUtPotU1dnk5c0k-xVs2-J_AKyLL9CuB0QogMDDv8fQ234GeMLk5UJenxfo8KFaoZgz9JhQ3z_dtDKi0xqrG61MdkDsvf0TuBshPHcp10Rav3i9UivxdArwJM0q5jhiuDsGp3zinftpYUspA.bnVsbA
 @json = application/json
 
+### Login user
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+  "username": "bob",
+  "password": "secret123"
+}
+
 ### Renew access token
 POST {{baseUrl}}/tokens/renew_access
 Content-Type: application/json
@@ -12,14 +21,7 @@ Content-Type: application/json
 }
 
 
-### Login user
-POST {{baseUrl}}/users/login
-Content-Type: application/json
 
-{
-  "username": "bob",
-  "password": "secret123"
-}
 
 
 
