@@ -1,13 +1,14 @@
 -- name: UpdateUser :one
 UPDATE users
 SET
-  hashed_password = CASE
-    WHEN $1 = true THEN $2
-    ELSE hashed_password
+  hashed_password = COALESCE(sqlc.narg('hashed_password'), hashed_password),
+  password_changed_at = CASE
+    WHEN sqlc.narg('hashed_password') IS NOT NULL THEN NOW()
+    ELSE password_changed_at
   END,
-  full_name = $3,
-  email = $4
-WHERE username = $5
+  full_name = COALESCE(sqlc.narg('full_name'), full_name),
+  email     = COALESCE(sqlc.narg('email'), email)
+WHERE username = sqlc.arg('username')
 RETURNING *;
 
 -- name: CreateUser :one

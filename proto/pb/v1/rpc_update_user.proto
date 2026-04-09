@@ -1,0 +1,20 @@
+// simple-bank/proto/pb/v1/rpc_update_user.proto
+syntax = "proto3";
+
+package pb.v1;
+
+option go_package = "github.com/thinhcompany/simple-bank/pb/v1;pbv1";
+
+import "pb/v1/user.proto";
+
+message UpdateUserRequest {
+  string username = 1;
+
+  optional string full_name = 2;
+  optional string email     = 3;
+  optional string password  = 4;
+}
+
+message UpdateUserResponse {
+  User user = 1;
+}

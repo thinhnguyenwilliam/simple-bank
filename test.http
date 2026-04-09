@@ -3,6 +3,55 @@
 @refresh_token = v2.local.donVmdYc4pzGA11fl47-mqgdYnQ3ExuMpJoF5kT7wmpcvBCIG2AYO5HbF7t6pThfNaYPJqZ0gjzfvMot1QVn-fyafjgBqBymord61-QslfUaMpLDbkfHZ9XMt1Zw6YvkUtPotU1dnk5c0k-xVs2-J_AKyLL9CuB0QogMDDv8fQ234GeMLk5UJenxfo8KFaoZgz9JhQ3z_dtDKi0xqrG61MdkDsvf0TuBshPHcp10Rav3i9UivxdArwJM0q5jhiuDsGp3zinftpYUspA.bnVsbA
 @json = application/json
 
+### Invalid (empty password)
+PATCH {{baseUrl}}/users/bob
+Content-Type: {{json}}
+# Authorization: Bearer {{access_token}}
+
+{
+  "password": ""
+}
+
+### Update all fields
+PATCH {{baseUrl}}/users/bob
+Content-Type: {{json}}
+# Authorization: Bearer {{access_token}}
+
+{
+  "full_name": "Bob Full",
+  "email": "bobfull@gmail.com",
+  "password": "supersecret"
+}
+
+
+### Update password
+PATCH {{baseUrl}}/users/bob
+Content-Type: {{json}}
+# Authorization: Bearer {{access_token}}
+
+{
+  "password": "newsecret123"
+}
+
+### Update only full name
+PATCH {{baseUrl}}/users/bob
+Content-Type: {{json}}
+# Authorization: Bearer {{access_token}}
+
+{
+  "full_name": "Only Name Changed"
+}
+
+### Update user (partial)
+PATCH {{baseUrl}}/users/bob
+Content-Type: {{json}}
+# Authorization: Bearer {{access_token}}
+
+{
+  "full_name": "Bob Updated",
+  "email": "bob_updated@gmail.com"
+}
+
 ### Login user
 POST {{baseUrl}}/users/login
 Content-Type: application/json
