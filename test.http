@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:8084/v1
-@access_token = v2.local.tlf0wSukTski_z7KkQCOoA2HcKWiPuYUssAWSHMmPx_pBqMAq7TMAJu-1C05tLq5Uw2QIzHJOQZpdbmyYyg0uQUhRqWhq-tl9eq8syoXOCgN1MYGCA6aWEku5iE5Gn99b36HxORW-iMABJTbsb3XC8fw5xEfbGRR4sL7y6uHPHTR8gAn2HQvUKQfpzI3Be238qGfw7KHOjO8vZlCCdSJQlhIrBrIHA__MafAhltOyGwvJbriK1qrFIfIxMKmSdMQZtsmHadynjb-HtztGDpVtmfHJpX4A03NBtc.bnVsbA
+@access_token = v2.local.LKjhMu7rjR9zr7ct-q8F-VT2GPP9gCd9ZrYLSPZEfh4XVUL0x-pH9ebApJys18FD9SLqt8SUDiO1aK3s9WTbeuW0Nv-0YA0XJ8Ipjhyt4LcEFCag2j44VMqX5Z6aOJ4PwNPx6BvQv_-3SyiuaBTIfhNdlcN09DnXZfnLa0SURq8kk4s06TrNIqQhXqv5PEwyWamwp7ORk2n-5c8yi8A_ED8NZnIX6eL6FjHG7zSim0YiSSIeeGm7C__twk6oWy7UozQuzmkEot9vSK5Jr9ue-mtxuHcn8etecQ.bnVsbA
 @refresh_token = v2.local.donVmdYc4pzGA11fl47-mqgdYnQ3ExuMpJoF5kT7wmpcvBCIG2AYO5HbF7t6pThfNaYPJqZ0gjzfvMot1QVn-fyafjgBqBymord61-QslfUaMpLDbkfHZ9XMt1Zw6YvkUtPotU1dnk5c0k-xVs2-J_AKyLL9CuB0QogMDDv8fQ234GeMLk5UJenxfo8KFaoZgz9JhQ3z_dtDKi0xqrG61MdkDsvf0TuBshPHcp10Rav3i9UivxdArwJM0q5jhiuDsGp3zinftpYUspA.bnVsbA
 @json = application/json
 
@@ -39,7 +39,7 @@ Content-Type: {{json}}
 Authorization: Bearer {{access_token}}
 
 {
-  "full_name": "Only Name Changed"
+  "full_name": "Only Name Changed 1"
 }
 
 ### Update user (partial)

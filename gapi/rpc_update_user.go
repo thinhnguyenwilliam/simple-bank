@@ -18,7 +18,7 @@ func (s *Server) UpdateUser(ctx context.Context, req *pbv1.UpdateUserRequest) (*
 		"admin": true,
 		"user":  true,
 	}
-
+	//payload := ctx.Value("user").(*token.Payload): có thể sau  này xài này hơn chứ không xài này nữa: payload, err := s.authorizeUser(ctx, accessibleRoles)
 	payload, err := s.authorizeUser(ctx, accessibleRoles)
 	if err != nil {
 		return nil, status.Errorf(codes.Unauthenticated, "unauthorized: %v", err)

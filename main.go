@@ -29,6 +29,7 @@ import (
 	pb "github.com/thinhcompany/simple-bank/pb/pb/v1"
 	"github.com/thinhcompany/simple-bank/util"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/protobuf/encoding/protojson"
 
@@ -71,7 +72,7 @@ func runGatewayServer(
 	store db.Store,
 	taskDistributor worker.TaskDistributor,
 ) {
-	server, err := gapi.NewServer(config, store, taskDistributor)
+	_, err := gapi.NewServer(config, store, taskDistributor)
 	if err != nil {
 		log.Fatal("cannot create gRPC server:", err)
 	}
@@ -94,9 +95,16 @@ func runGatewayServer(
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	if err := pb.RegisterSimpleBankServiceHandlerServer(ctx, grpcMux, server); err != nil {
-		log.Fatal("cannot register gateway:", err)
+	opts := []grpc.DialOption{
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	}
+
+	err = pb.RegisterSimpleBankServiceHandlerFromEndpoint(
+		ctx,
+		grpcMux,
+		config.GrpcServerAddress, // 👈 connect tới gRPC server
+		opts,
+	)
 
 	// ===== HTTP mux (QUAN TRỌNG) =====
 	mux := http.NewServeMux()
@@ -170,7 +178,12 @@ func runGrpcServer(config util.Config, store db.Store, taskDistributor worker.Ta
 		log.Fatal("cannot create grpc server:", err)
 	}
 
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(
+		grpc.ChainUnaryInterceptor(
+			// server.AuthInterceptor(), // ✅ auth trước
+			gapi.GrpcLogger, // ✅ logger sau
+		),
+	)
 	pb.RegisterSimpleBankServiceServer(grpcServer, server)
 
 	// ✅ Enable reflection
