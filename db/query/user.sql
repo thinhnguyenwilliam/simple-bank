@@ -1,3 +1,10 @@
+-- name: VerifyUserEmail :one
+UPDATE users
+SET is_email_verified = true
+WHERE username = $1
+  AND is_email_verified = false
+RETURNING *;
+
 -- name: UpdateUser :one
 UPDATE users
 SET

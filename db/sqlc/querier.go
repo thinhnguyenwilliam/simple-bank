@@ -38,6 +38,7 @@ type Querier interface {
 	UpdateSessionBlocked(ctx context.Context, arg UpdateSessionBlockedParams) error
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (Users, error)
 	UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) (Users, error)
+	VerifyUserEmail(ctx context.Context, username string) (Users, error)
 	VerifyUserEmailTx(ctx context.Context, username string) error
 }
 

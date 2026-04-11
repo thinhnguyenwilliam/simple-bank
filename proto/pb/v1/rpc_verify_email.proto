@@ -1,0 +1,16 @@
+// simple-bank/proto/pb/v1/rpc_verify_email.proto
+syntax = "proto3";
+
+package pb.v1;
+
+option go_package = "github.com/thinhcompany/simple-bank/pb/v1;pbv1";
+
+
+message VerifyEmailRequest {
+    int64 email_id = 1;
+    string secret_code = 2;
+}
+
+message VerifyEmailResponse {
+    bool is_verified = 1;
+}

@@ -91,7 +91,7 @@ func (p *RedisTaskProcessor) ProcessSendVerifyEmail(
 
 	// Build verify URL
 	verifyURL := fmt.Sprintf(
-		"https://example.com/verify-email?id=%d&secret_code=%s",
+		"http://localhost:8084/v1/emails/verify?email_id=%d&secret_code=%s",
 		verifyEmail.ID,
 		verifyEmail.SecretCode,
 	)

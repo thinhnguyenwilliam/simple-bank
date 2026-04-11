@@ -155,7 +155,7 @@ func runGatewayServer(
 		MaxAge:           12 * 60 * 60, // 12 giờ
 	})
 
-	handler := c.Handler(mux)
+	handler := gapi.HttpLogger(c.Handler(mux))
 
 	if err := http.Serve(listener, handler); err != nil {
 		log.Fatal("cannot start HTTP gateway:", err)

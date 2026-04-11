@@ -9,6 +9,7 @@ import "pb/v1/rpc_create_user.proto";
 import "pb/v1/rpc_login_user.proto";
 import "pb/v1/rpc_update_user.proto";
 import "google/api/annotations.proto";
+import "pb/v1/rpc_verify_email.proto";
 
 // Nếu buf lint + buf generate PASS → proto của bạn ĐÚNG.
 // IDE báo đỏ có thể bỏ qua an toàn.
@@ -44,7 +45,6 @@ service SimpleBankService {
   }
 
 
- // 👇 ADD UPDATE USER
   rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {
     option (google.api.http) = {
       patch: "/v1/users/{username}"   // RESTful chuẩn
@@ -55,5 +55,15 @@ service SimpleBankService {
       description: "Partially update user information (full name, email, password)"
     };
   }
-  
+
+
+  rpc VerifyEmail (VerifyEmailRequest) returns (VerifyEmailResponse) {
+        option (google.api.http) = {
+            get: "/v1/emails/verify"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to verify user's email address";
+            summary: "Verify email";
+        };
+    }
 }

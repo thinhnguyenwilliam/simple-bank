@@ -12,6 +12,7 @@ type Store interface {
 	Querier
 	TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error)
 	TxCreateUser(ctx context.Context, arg TxCreateUserParams) (TxCreateUserResult, error)
+	VerifyEmailTx(ctx context.Context, arg VerifyEmailTxParams) (VerifyEmailTxResult, error)
 }
 
 // Store provides all functions to execute SQL queries and transactions

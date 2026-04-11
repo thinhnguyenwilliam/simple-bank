@@ -173,8 +173,12 @@ const updateUser = `-- name: UpdateUser :one
 UPDATE users
 SET
   hashed_password = COALESCE($1, hashed_password),
-  full_name       = COALESCE($2, full_name),
-  email           = COALESCE($3, email)
+  password_changed_at = CASE
+    WHEN $1 IS NOT NULL THEN NOW()
+    ELSE password_changed_at
+  END,
+  full_name = COALESCE($2, full_name),
+  email     = COALESCE($3, email)
 WHERE username = $4
 RETURNING username, hashed_password, full_name, email, password_changed_at, created_at, is_email_verified
 `
@@ -222,6 +226,29 @@ type UpdateUserPasswordParams struct {
 
 func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) (Users, error) {
 	row := q.db.QueryRowContext(ctx, updateUserPassword, arg.Username, arg.HashedPassword)
+	var i Users
+	err := row.Scan(
+		&i.Username,
+		&i.HashedPassword,
+		&i.FullName,
+		&i.Email,
+		&i.PasswordChangedAt,
+		&i.CreatedAt,
+		&i.IsEmailVerified,
+	)
+	return i, err
+}
+
+const verifyUserEmail = `-- name: VerifyUserEmail :one
+UPDATE users
+SET is_email_verified = true
+WHERE username = $1
+  AND is_email_verified = false
+RETURNING username, hashed_password, full_name, email, password_changed_at, created_at, is_email_verified
+`
+
+func (q *Queries) VerifyUserEmail(ctx context.Context, username string) (Users, error) {
+	row := q.db.QueryRowContext(ctx, verifyUserEmail, username)
 	var i Users
 	err := row.Scan(
 		&i.Username,
