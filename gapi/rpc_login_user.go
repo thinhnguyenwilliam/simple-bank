@@ -45,6 +45,7 @@ func (s *Server) LoginUser(
 	// 4. Create access token
 	accessToken, accessPayload, err := s.tokenMaker.CreateToken(
 		user.Username,
+		"user",
 		s.config.AccessTokenDuration,
 	)
 	if err != nil {
@@ -57,6 +58,7 @@ func (s *Server) LoginUser(
 	// 5. Create refresh token
 	refreshToken, refreshPayload, err := s.tokenMaker.CreateToken(
 		user.Username,
+		"user",
 		s.config.RefreshTokenDuration,
 	)
 	if err != nil {

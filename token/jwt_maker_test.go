@@ -29,7 +29,7 @@ func TestJWTMakerCreateAndVerifyToken(t *testing.T) {
 	username := util.RandomOwner()
 	duration := time.Minute
 
-	token, payload, err := maker.CreateToken(username, duration)
+	token, payload, err := maker.CreateToken(username, "test_role", duration)
 	require.NoError(t, err)
 	require.NotEmpty(t, token)
 
@@ -46,7 +46,7 @@ func TestJWTMakerExpiredToken(t *testing.T) {
 	maker, err := NewJWTMaker(util.RandomString(32))
 	require.NoError(t, err)
 
-	token, payload, err := maker.CreateToken(util.RandomOwner(), -time.Minute)
+	token, payload, err := maker.CreateToken(util.RandomOwner(), "test_role", -time.Minute)
 	require.NoError(t, err)
 
 	payload, err = maker.VerifyToken(token)
@@ -70,7 +70,7 @@ func TestJWTMakerWrongSecretKey(t *testing.T) {
 	maker2, err := NewJWTMaker(util.RandomString(32))
 	require.NoError(t, err)
 
-	token, payload, err := maker1.CreateToken(util.RandomOwner(), time.Minute)
+	token, payload, err := maker1.CreateToken(util.RandomOwner(), "test_role", time.Minute)
 	require.NoError(t, err)
 
 	payload, err = maker2.VerifyToken(token)

@@ -13,6 +13,21 @@ import (
 )
 
 func (s *Server) UpdateUser(ctx context.Context, req *pbv1.UpdateUserRequest) (*pbv1.UpdateUserResponse, error) {
+	// ✅ define roles được phép
+	accessibleRoles := map[string]bool{
+		"admin": true,
+		"user":  true,
+	}
+
+	payload, err := s.authorizeUser(ctx, accessibleRoles)
+	if err != nil {
+		return nil, status.Errorf(codes.Unauthenticated, "unauthorized: %v", err)
+	}
+
+	// ✅ RBAC logic
+	if payload.Role != "admin" && payload.Username != req.Username {
+		return nil, status.Errorf(codes.PermissionDenied, "cannot update other user")
+	}
 
 	arg := db.UpdateUserParams{
 		Username: req.Username,

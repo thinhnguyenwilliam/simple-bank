@@ -18,7 +18,7 @@ func TestPasetoMakerCreateAndVerifyToken(t *testing.T) {
 	username := "thinh"
 	duration := time.Minute
 
-	token, payload, err := maker.CreateToken(username, duration)
+	token, payload, err := maker.CreateToken(username, "test_role", duration)
 	require.NoError(t, err)
 	require.NotEmpty(t, token)
 	require.NotEmpty(t, payload)
@@ -34,7 +34,7 @@ func TestPasetoMakerExpiredToken(t *testing.T) {
 	maker, err := NewPasetoMaker(util.RandomString(32))
 	require.NoError(t, err)
 
-	token, payload, err := maker.CreateToken("thinh", -time.Minute)
+	token, payload, err := maker.CreateToken("thinh", "test_role", -time.Minute)
 	require.NoError(t, err)
 
 	payload, err = maker.VerifyToken(token)
@@ -47,7 +47,7 @@ func TestPasetoMakerWrongSecretKey(t *testing.T) {
 	maker1, _ := NewPasetoMaker(util.RandomString(32))
 	maker2, _ := NewPasetoMaker(util.RandomString(32))
 
-	token, payload, err := maker1.CreateToken("thinh", time.Minute)
+	token, payload, err := maker1.CreateToken("thinh", "test_role", time.Minute)
 	require.NoError(t, err)
 
 	payload, err = maker2.VerifyToken(token)

@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:8084/v1
-@access_token = v2.local.KiMpFl_PBzjjylaqzpbsMf1HKZuCggcdBjI355GD6xuaC2x_WTiSoW_D5wSqu6h74IvepUDAcjrWc1pyC6ftKEiXZ2MLJ2XPOn_MH0GHt8pcOudxWvV11OYjyuj101vX72_Hbk7zCDD-oXiBMoKdWVCldEyQ6-EWHwzzU04CkamA41vy_qerUtycnSJ6US_17Ozo0fmxlzbweWHk3QoA-ewSNQjXwv2v51ZJHSNOqFSLZBPhtpNeqSTrf8PUGlUCVdjd9ZVIiw.bnVsbA
+@access_token = v2.local.tlf0wSukTski_z7KkQCOoA2HcKWiPuYUssAWSHMmPx_pBqMAq7TMAJu-1C05tLq5Uw2QIzHJOQZpdbmyYyg0uQUhRqWhq-tl9eq8syoXOCgN1MYGCA6aWEku5iE5Gn99b36HxORW-iMABJTbsb3XC8fw5xEfbGRR4sL7y6uHPHTR8gAn2HQvUKQfpzI3Be238qGfw7KHOjO8vZlCCdSJQlhIrBrIHA__MafAhltOyGwvJbriK1qrFIfIxMKmSdMQZtsmHadynjb-HtztGDpVtmfHJpX4A03NBtc.bnVsbA
 @refresh_token = v2.local.donVmdYc4pzGA11fl47-mqgdYnQ3ExuMpJoF5kT7wmpcvBCIG2AYO5HbF7t6pThfNaYPJqZ0gjzfvMot1QVn-fyafjgBqBymord61-QslfUaMpLDbkfHZ9XMt1Zw6YvkUtPotU1dnk5c0k-xVs2-J_AKyLL9CuB0QogMDDv8fQ234GeMLk5UJenxfo8KFaoZgz9JhQ3z_dtDKi0xqrG61MdkDsvf0TuBshPHcp10Rav3i9UivxdArwJM0q5jhiuDsGp3zinftpYUspA.bnVsbA
 @json = application/json
 
@@ -13,9 +13,9 @@ Content-Type: {{json}}
 }
 
 ### Update all fields
-PATCH {{baseUrl}}/users/bob
+PATCH {{baseUrl}}/users/Tai8
 Content-Type: {{json}}
-# Authorization: Bearer {{access_token}}
+Authorization: Bearer {{access_token}}
 
 {
   "full_name": "Bob Full",
@@ -25,7 +25,7 @@ Content-Type: {{json}}
 
 
 ### Update password
-PATCH {{baseUrl}}/users/bob
+PATCH {{baseUrl}}/users/Tai7
 Content-Type: {{json}}
 # Authorization: Bearer {{access_token}}
 
@@ -34,9 +34,9 @@ Content-Type: {{json}}
 }
 
 ### Update only full name
-PATCH {{baseUrl}}/users/bob
+PATCH {{baseUrl}}/users/Tai8
 Content-Type: {{json}}
-# Authorization: Bearer {{access_token}}
+Authorization: Bearer {{access_token}}
 
 {
   "full_name": "Only Name Changed"
@@ -57,8 +57,8 @@ POST {{baseUrl}}/users/login
 Content-Type: application/json
 
 {
-  "username": "bob",
-  "password": "secret123"
+  "username": "Tai8",
+  "password": "12345678A@a"
 }
 
 ### Renew access token
@@ -71,18 +71,15 @@ Content-Type: application/json
 
 
 
-
-
-
 ### Create user
 POST {{baseUrl}}/users
 Content-Type: application/json
 
 {
-  "username": "Tai6",
+  "username": "Tai8",
   "password": "12345678A@a",
   "full_name": "Tai Vu",
-  "email": "taiproe6@gmail.com"
+  "email": "taiproe8@gmail.com"
 }
 
 

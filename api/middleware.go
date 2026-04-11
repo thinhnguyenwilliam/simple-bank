@@ -67,6 +67,7 @@ func addAuthorization(
 ) {
 	accessToken, payload, err := tokenMaker.CreateToken(
 		username,
+		"test_role",
 		duration,
 	)
 	require.NoError(t, err)
